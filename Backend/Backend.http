@@ -1,0 +1,37 @@
+@Backend_HostAddress = http://localhost:5245
+
+### Register (201 created, 409 on duplicate control number)
+POST {{Backend_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "controlNumber": "s900",
+  "fullName": "Prueba Local",
+  "email": "prueba@example.com",
+  "password": "secret123"
+}
+
+###
+
+### Login (200 with token, 401 bad credentials, 403 pending)
+POST {{Backend_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "controlNumber": "s900",
+  "password": "secret123"
+}
+
+###
+
+### Me (needs Authorization: Bearer <token>)
+GET {{Backend_HostAddress}}/api/users/me
+Accept: application/json
+
+###
+
+### Admin: pending registrations (needs Administrator role)
+GET {{Backend_HostAddress}}/api/admin/users/pending
+Accept: application/json
+
+###

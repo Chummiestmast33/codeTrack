@@ -1,0 +1,22 @@
+# Variables locales y credenciales
+.env
+.env.*
+!.env.example
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+
+# Node / Vite
+**/node_modules/
+frontend/dist/
+
+# Herramientas y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
