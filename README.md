@@ -2,8 +2,6 @@
 
 ![CI](https://github.com/Chummiestmast33/codeTrack/actions/workflows/ci.yml/badge.svg)
 
-Taller AGO-DIC 2026. Responsable: Ing. Armando López Cisenna. Estudiante asesor: Pablo Cortez Rodríguez.
-
 ## Carpetas del proyecto
 
 - `Backend/`: proyecto único ASP.NET Core con `Controllers/`, `Domain/` (entidades, enums y reglas puras), `Application/` (casos de uso Identity con MediatR + FluentValidation), `Infrastructure/` (EF Core + PostgreSQL, hashing, JWT), `Middleware/` (errores RFC 7807) y `OpenApi/` (documento + esquema Bearer).
