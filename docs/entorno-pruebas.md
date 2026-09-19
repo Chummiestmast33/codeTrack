@@ -177,3 +177,19 @@ con error de CORS, verifica que el origen del frontend esté en esa lista.
 Usa su conexión **directa** (puerto 5432, `SSL Mode=Require`) para
 migraciones; el pooler (6543) puede usarse en runtime. Los secretos de
 producción van en el proveedor de hosting, nunca en el repo ni en `.env`.
+
+## 8. CI y freno local
+
+- **GitHub Actions** (`.github/workflows/ci.yml`): corre en cada `push` y
+  `pull request`, más disparo manual desde la pestaña Actions. Backend:
+  restore + build + `dotnet test` (sin BD ni secretos). Frontend:
+  `npm ci` + `lint` + `build`. El badge del README refleja `main`.
+  Recomendado: activar branch protection en `main` exigiendo el check.
+- **Hook pre-push local** (opcional pero recomendado): mismo freno antes
+  de subir. Instalar una vez con Git Bash:
+  ```powershell
+  Copy-Item scripts/pre-push .git/hooks/pre-push
+  ```
+  Corre `dotnet test` siempre y `lint` solo si el push toca `frontend/`.
+  Bypass (no recomendado): `git push --no-verify`. La garantía real es
+  el CI; el hook es solo ahorro de tiempo.

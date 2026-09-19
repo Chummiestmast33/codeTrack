@@ -1,5 +1,7 @@
 # Introducción a la Programación Competitiva
 
+![CI](https://github.com/Chummiestmast33/codeTrack/actions/workflows/ci.yml/badge.svg)
+
 Taller AGO-DIC 2026. Responsable: Ing. Armando López Cisenna. Estudiante asesor: Pablo Cortez Rodríguez.
 
 ## Carpetas del proyecto
