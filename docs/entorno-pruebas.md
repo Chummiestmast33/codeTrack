@@ -134,6 +134,25 @@ Respuestas de error (RFC 7807, `application/problem+json`):
 
 `Backend/Backend.http` tiene los mismos flujos listos para VS/Rider.
 
+## Frontend (fase 1: auth, layouts, 404, admin usuarios)
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+La app usa `VITE_API_URL` para el backend (default
+`http://localhost:5245`; créalo en `frontend/.env` si usas otro puerto).
+Rutas: `/login`, `/register`, `/pending`, `/app/*` (estudiante aprobado),
+`/admin/*` (rol Administrator), `*` → 404. El token vive en
+`localStorage`; el rol para guardias sale del JWT (el backend revalida
+todo). Textos en `src/locales/*.json` (`es` completo, resto con fallback).
+
+La API solo acepta los orígenes de `Cors:AllowedOrigins`
+(`http://localhost:5173`, `:5199`, `:8080` por default; en producción se
+fijan con `Cors__AllowedOrigins__0`, ...). Si el navegador bloquea el login
+con error de CORS, verifica que el origen del frontend esté en esa lista.
 ## 5. Troubleshooting (errores ya vistos en este proyecto)
 
 | Error | Causa | Fix |

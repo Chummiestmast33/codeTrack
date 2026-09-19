@@ -1,3 +1,4 @@
+using Backend.Api;
 using Backend.Application.Abstractions;
 using Backend.Application.Common;
 using Backend.Application.Features.Identity;
@@ -12,7 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi("v1", options =>
 {
@@ -26,6 +30,7 @@ builder.Services.AddOpenApi("v1", options =>
 });
 
 builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection(AuthOptions.SectionName));
+builder.Services.AddFrontendCors(builder.Configuration);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddTransient<IValidator<RegisterStudentCommand>, RegisterStudentValidator>();
 builder.Services.AddTransient<IValidator<LoginCommand>, LoginValidator>();
@@ -37,6 +42,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 var app = builder.Build();
 
 app.UseGlobalExceptionHandling();
+app.UseCors(CorsOptions.PolicyName);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

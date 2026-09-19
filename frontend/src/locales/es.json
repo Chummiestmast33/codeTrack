@@ -1,0 +1,85 @@
+{
+  "app": {
+    "title": "CodeTrack",
+    "subtitle": "Introducción a la Programación Competitiva · AGO-DIC 2026",
+    "apiDocsPrefix": "Documentación viva de la API en",
+    "devOnly": "(solo desarrollo)",
+    "languageLabel": "Idioma"
+  },
+  "nav": {
+    "dashboard": "Inicio",
+    "profile": "Mi perfil",
+    "admin": "Administración",
+    "users": "Usuarios"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando…",
+    "retry": "Reintentar",
+    "back": "Volver"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "register": "Crear cuenta",
+    "controlNumber": "Número de control",
+    "fullName": "Nombre completo",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "noAccount": "¿Sin cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "pendingTitle": "Solicitud en revisión",
+    "pendingNotice": "Tu cuenta está pendiente de aprobación.",
+    "validation": {
+      "required": "Este campo es obligatorio.",
+      "email": "Escribe un correo válido.",
+      "minLength": "Mínimo {{count}} caracteres."
+    }
+  },
+  "dashboard": {
+    "greeting": "Hola, {{name}}",
+    "comingSoon": "Tu progreso por tema aparecerá aquí en el siguiente módulo."
+  },
+  "profile": {
+    "title": "Mi perfil"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La dirección no existe o no tienes acceso.",
+    "backHome": "Volver al inicio"
+  },
+  "admin": {
+    "users": {
+      "title": "Usuarios",
+      "filter": {
+        "pending": "Pendientes",
+        "all": "Todos"
+      },
+      "empty": "No hay usuarios en esta vista.",
+      "status": "Estado",
+      "actions": "Acciones",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "activate": "Activar",
+      "deactivate": "Desactivar",
+      "resetPassword": "Restablecer",
+      "resetTitle": "Restablecer contraseña de {{name}}",
+      "inactive": "desactivada",
+      "approval": {
+        "Pending": "Pendiente",
+        "Approved": "Aprobada",
+        "Rejected": "Rechazada"
+      }
+    }
+  },
+  "errors": {
+    "400": "Revisa los datos enviados.",
+    "401": "No tienes sesión iniciada.",
+    "403": "No tienes acceso.",
+    "404": "No se encontró el recurso.",
+    "409": "El dato ya está registrado.",
+    "500": "Ocurrió un error inesperado.",
+    "network": "No se pudo conectar con el servidor."
+  }
+}

@@ -6,7 +6,7 @@ Taller AGO-DIC 2026. Responsable: Ing. Armando López Cisenna. Estudiante asesor
 
 - `Backend/`: proyecto único ASP.NET Core con `Controllers/`, `Domain/` (entidades, enums y reglas puras), `Application/` (casos de uso Identity con MediatR + FluentValidation), `Infrastructure/` (EF Core + PostgreSQL, hashing, JWT), `Middleware/` (errores RFC 7807) y `OpenApi/` (documento + esquema Bearer).
 - `Backend.Tests/`: proyecto de pruebas xUnit que referencia a `Backend/`; cubre casos de riesgo del dominio, aplicación e infraestructura.
-- `frontend/src/`: estructura vacía (`api/`, `components/`, `features/`, `pages/`, `routes/`, `styles/`, `types/` con `.gitkeep`). El scaffold React + Vite + Tailwind está pendiente y se construirá después del backend.
+- `frontend/`: React 19 + Vite 8 + Tailwind CSS v4 (`npm run dev` / `npm run build` desde `frontend/`). Fuente en `src/` (`api/`, `components/`, `features/`, `pages/`, `routes/`, `styles/`, `types/`).
 - `docs/`: requisitos, reglas de negocio, decisiones, arquitectura y guía del entorno de pruebas.
 - `docker-compose.yml`: Postgres local para desarrollo; `.env.example` con las variables necesarias (nunca commitear `.env`).
 
@@ -27,6 +27,6 @@ En producción la base será Supabase: usa su conexión directa (puerto 5432, `S
 ## Orden de construcción
 
 1. Backend primero (dominio, aplicación, infraestructura, endpoints).
-2. Después inicializar React con Vite dentro de `frontend/` conservando las carpetas `src/` actuales. Si el generador crea un `src/` propio, integrar sus archivos en estas carpetas.
+2. Frontend con React + Vite + Tailwind v4 ya inicializado en `frontend/`; desarrolla las pantallas sobre las carpetas `src/` existentes.
 3. Conecta el frontend con el backend y desarrolla primero usuarios, temas, sesiones y asistencia; continúa con actividades, progreso y reportes según [`docs/requisitos-funcionales.md`](docs/requisitos-funcionales.md).
 4. Antes de validar el número de control, consulta [`docs/reglas-negocio.md`](docs/reglas-negocio.md): RN-02 está cancelada. El número sigue siendo obligatorio y único.

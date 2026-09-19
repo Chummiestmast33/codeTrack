@@ -1,0 +1,7 @@
+{
+  "_note": "English skeleton. Missing keys fall back to Spanish (fallbackLng). Translate on top of the es.json structure.",
+  "app": {
+    "title": "CodeTrack",
+    "languageLabel": "Language"
+  }
+}
