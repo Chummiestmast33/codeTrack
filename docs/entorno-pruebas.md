@@ -27,7 +27,8 @@ será Supabase.
 
 ## 2. Secretos y variables: cómo funciona
 
-Hay **dos mundos** y no se mezclan solos:
+Hay **dos mundos** y no se mezclan solos. Referencia completa de todas
+las claves (dev + producción): [`docs/secretos.md`](secretos.md).
 
 | Mundo | Lee de | Formato de nombres | Cuándo se usa |
 |---|---|---|---|
@@ -190,9 +191,40 @@ mapeo de variables y verificación ticket → PUT → confirmación).
 
 ## 7. Producción (Supabase)
 
-Usa su conexión **directa** (puerto 5432, `SSL Mode=Require`) para
-migraciones; el pooler (6543) puede usarse en runtime. Los secretos de
-producción van en el proveedor de hosting, nunca en el repo ni en `.env`.
+Migraciones: conexión **directa** (`db.<ref>.supabase.co:5432`, usuario
+`postgres`, `SSL Mode=Require`). Runtime (contenedor persistente):
+**shared pooler en modo sesión** (`:5432`, usuario `postgres.<ref>`,
+host **copiado del diálogo Connect**, soporta prepared statements).
+No usar el modo transacción (`:6543`): es para serverless y rompe
+prepared statements. Percent-encodea el password si trae `&`, `#`, `?`
+o espacios (solo en formato URI `postgresql://`; en formato `Clave=...`
+va tal cual). Los secretos de producción van en el proveedor de hosting,
+nunca en el repo ni en `.env`.
+
+### 7.1. Conexión remota paso a paso
+
+1. En el dashboard abre **Connect** y copia las dos cadenas (reemplaza
+   `[PASSWORD]` por el password de la base; si no lo tienes, se resetea
+   en Database settings):
+   - **Directa** (migraciones):
+     `Host=db.<ref>.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=[PASSWORD];SSL Mode=Require`
+   - **Session pooler** (runtime):
+     `Host=<pooler-host>;Port=5432;Database=postgres;Username=postgres.<ref>;Password=[PASSWORD];SSL Mode=Require`
+2. Aplica migraciones (idempotente, seguro repetirlo):
+   ```powershell
+   dotnet ef database update --project Backend --connection "<directa>"
+   ```
+   Un `28P01` significa password incorrecto; un timeout, problema de red
+   (la directa es IPv6 salvo add-on; como respaldo usa el pooler sesión,
+   que es IPv4 y también acepta DDL).
+3. Arranca la API con la cadena del pooler sesión en
+   `ConnectionStrings__DefaultConnection` y verifica:
+   - `GET /health` → 200 con `appliedMigrations` esperado.
+   - Login del admin seed → 200 (configura `Admin:*` antes si es BD nueva).
+   - `GET /api/topics` → los 6 temas oficiales del seed.
+4. Estado esperado hoy: 4 migraciones aplicadas, seed de temas, sin datos
+   de prueba. El password solo vive en memoria de la sesión donde lo
+   uses; no va a archivos, docs ni reportes.
 
 ### Encabezado oficial de reportes (RN-08)
 Proyecto, periodo, responsable y asesor son configuración, no código:

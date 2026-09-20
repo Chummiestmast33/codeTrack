@@ -78,19 +78,18 @@ public static class InfrastructureServiceRegistration
     private static void RegisterFileStorage(IServiceCollection services, IConfiguration configuration)
     {
         var storage = configuration.GetSection(StorageOptions.SectionName).Get<StorageOptions>() ?? new StorageOptions();
-        if (string.IsNullOrWhiteSpace(storage.Endpoint) || string.IsNullOrWhiteSpace(storage.SecretKey))
+        if (string.IsNullOrWhiteSpace(storage.Endpoint)
+            || string.IsNullOrWhiteSpace(storage.Region)
+            || string.IsNullOrWhiteSpace(storage.Bucket)
+            || string.IsNullOrWhiteSpace(storage.AccessKey)
+            || string.IsNullOrWhiteSpace(storage.SecretKey))
         {
             services.AddSingleton<IFileStorage, UnconfiguredFileStorage>();
             return;
         }
 
-        services.AddHttpClient<SupabaseStorageClient>(client =>
-        {
-            client.BaseAddress = new Uri(storage.Endpoint.TrimEnd('/') + "/");
-            client.Timeout = TimeSpan.FromSeconds(30);
-        });
-        services.AddTransient<IFileStorage>(sp =>
-            sp.GetRequiredService<SupabaseStorageClient>());
+        services.AddSingleton(_ => S3StorageClient.CreateClient(storage));
+        services.AddSingleton<IFileStorage, S3StorageClient>();
     }
 
     public static IApplicationBuilder MapAppHealthChecks(this IApplicationBuilder app)
