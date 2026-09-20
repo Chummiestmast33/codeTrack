@@ -71,13 +71,20 @@ public sealed class OperationalTests
         Assert.Equal(HealthStatus.Unhealthy, result.Status);
     }
 
-    private static ServiceProvider SeedProvider(string dbName, AdminOptions admin)
+    private sealed class ThrowingHasher : IPasswordHasher
+    {
+        public string Hash(string password) => throw new InvalidOperationException("hash boom");
+
+        public bool Verify(string passwordHash, string password) => throw new InvalidOperationException("hash boom");
+    }
+
+    private static ServiceProvider SeedProvider(string dbName, AdminOptions admin, IPasswordHasher? hasher = null)
     {
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton<TimeProvider>(new FixedTimeProvider(Now));
         services.AddSingleton<IUserContext>(new ActorContext(null));
-        services.AddSingleton<IPasswordHasher, FakePasswordHasher>();
+        services.AddSingleton<IPasswordHasher>(hasher ?? new FakePasswordHasher());
         services.AddSingleton(Options.Create(admin));
         services.AddDbContext<TallerDbContext>(o => o.UseInMemoryDatabase(dbName));
         services.AddScoped<AdminSeedHostedService>();
@@ -116,6 +123,21 @@ public sealed class OperationalTests
     {
         var dbName = Guid.NewGuid().ToString();
         using var provider = SeedProvider(dbName, new AdminOptions());
+        using var scope = provider.CreateScope();
+
+        await scope.ServiceProvider.GetRequiredService<AdminSeedHostedService>()
+            .StartAsync(CancellationToken.None);
+
+        using var verify = provider.CreateScope();
+        var db = verify.ServiceProvider.GetRequiredService<TallerDbContext>();
+        Assert.Empty(await db.Users.ToListAsync());
+    }
+
+    [Fact]
+    public async Task AdminSeed_Failure_Does_Not_Throw()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        using var provider = SeedProvider(dbName, ConfiguredAdmin(), new ThrowingHasher());
         using var scope = provider.CreateScope();
 
         await scope.ServiceProvider.GetRequiredService<AdminSeedHostedService>()

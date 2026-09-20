@@ -38,6 +38,23 @@ public sealed class AdminSeedHostedService : IHostedService
             return;
         }
 
+        try
+        {
+            await SeedAsync(admin, cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // Never take down the host: the admin can be seeded on the next healthy boot.
+            _logger.LogError(ex, "Admin seed failed; startup continues.");
+        }
+    }
+
+    private async Task SeedAsync(AdminOptions admin, CancellationToken cancellationToken)
+    {
         using var scope = _scopes.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<TallerDbContext>();
         var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
