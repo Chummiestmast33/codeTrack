@@ -92,7 +92,7 @@ public static class InfrastructureServiceRegistration
             return;
         }
 
-        services.AddSingleton(_ => S3StorageClient.CreateClient(storage));
+        services.AddSingleton<Amazon.S3.IAmazonS3>(_ => S3StorageClient.CreateClient(storage));
         services.AddSingleton<IFileStorage, S3StorageClient>();
     }
 

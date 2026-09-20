@@ -43,6 +43,29 @@ public sealed class InfrastructureWiringTests
     }
 
     [Fact]
+    public void AddInfrastructure_WithStorageConfigured_ResolvesFileStorage()
+    {
+        var config = new ConfigurationBuilder()
+            .AddConfiguration(Config())
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Storage:Endpoint"] = "https://storage.example.invalid",
+                ["Storage:Region"] = "us-east-1",
+                ["Storage:Bucket"] = "test-submissions",
+                ["Storage:AccessKey"] = "test-access-key",
+                ["Storage:SecretKey"] = "test-secret-key"
+            })
+            .Build();
+        var services = new ServiceCollection();
+        services.AddSingleton<TimeProvider>(new FixedTimeProvider(Now));
+        services.AddInfrastructure(config);
+        using var provider = services.BuildServiceProvider();
+
+        Assert.IsType<Backend.Infrastructure.Storage.S3StorageClient>(
+            provider.GetRequiredService<IFileStorage>());
+    }
+
+    [Fact]
     public void PasswordHasher_Roundtrips()
     {
         var services = new ServiceCollection();
