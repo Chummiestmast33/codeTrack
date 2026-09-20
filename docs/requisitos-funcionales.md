@@ -1,6 +1,6 @@
 # Requisitos funcionales
 
-Proyecto: **Introducción a la Programación Competitiva** · Periodo: **AGO-DIC 2026**.
+Proyecto: **Introducción a la Programación Competitiva** · Periodo: **\<periodo>** (configurable por despliegue).
 
 Los identificadores RF-01 a RF-24 se conservan para seguimiento en GitHub. Las alternativas que aparezcan como sugerencias requieren una decisión antes de implementarse.
 
@@ -413,13 +413,13 @@ La lista debe incluir:
 - Asistencia por sesión.
 - Porcentaje de asistencia.
 
-Ejemplo de encabezado:
+Ejemplo de encabezado (valores configurables por despliegue, nunca fijos en el repositorio):
 
 ```text
-Proyecto: Introducción a la Programación Competitiva
-Periodo: AGO-DIC 2026
-Responsable: Ing. Armando López Cisenna
-Estudiante asesor: Pablo Cortez Rodríguez
+Proyecto: <nombre del proyecto>
+Periodo: <periodo>
+Responsable: <responsable del proyecto>
+Estudiante asesor: <estudiante asesor>
 ```
 
 ### RF-22: Generar tabla de progreso

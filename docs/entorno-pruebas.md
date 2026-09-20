@@ -144,6 +144,9 @@ npm run dev
 
 La app usa `VITE_API_URL` para el backend (default
 `http://localhost:5245`; créalo en `frontend/.env` si usas otro puerto).
+`VITE_PERIOD` muestra el periodo junto al nombre del taller (vacío = oculto);
+ver `frontend/.env.example`. Ningún dato personal vive en el repo: encabezado
+de reportes por `Reports:*` y periodo visible por `VITE_PERIOD`.
 Rutas: `/login`, `/register`, `/pending`, `/app/*` (estudiante aprobado),
 `/admin/*` (rol Administrator), `*` → 404. El token vive en
 `localStorage`; el rol para guardias sale del JWT (el backend revalida
@@ -177,6 +180,21 @@ con error de CORS, verifica que el origen del frontend esté en esa lista.
 Usa su conexión **directa** (puerto 5432, `SSL Mode=Require`) para
 migraciones; el pooler (6543) puede usarse en runtime. Los secretos de
 producción van en el proveedor de hosting, nunca en el repo ni en `.env`.
+
+### Encabezado oficial de reportes (RN-08)
+
+Proyecto, periodo, responsable y asesor son configuración, no código:
+
+```powershell
+dotnet user-secrets set "Reports:ProjectName" "..." --project Backend
+dotnet user-secrets set "Reports:Period" "..." --project Backend
+dotnet user-secrets set "Reports:Responsible" "..." --project Backend
+dotnet user-secrets set "Reports:Advisor" "..." --project Backend
+```
+
+En Compose equivalen a `REPORT_PROJECT_NAME`, `REPORT_PERIOD`,
+`REPORT_RESPONSIBLE` y `REPORT_ADVISOR` del `.env`. Sin estos valores,
+exportar un reporte falla con un error claro en vez de salir en blanco.
 
 ## 8. CI y freno local
 

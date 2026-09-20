@@ -1,6 +1,6 @@
 # Requisitos no funcionales
 
-Proyecto: **Introducción a la Programación Competitiva** · Periodo: **AGO-DIC 2026**.
+Proyecto: **Introducción a la Programación Competitiva** · Periodo: **\<periodo>** (configurable por despliegue).
 
 Las metas marcadas como sugeridas son objetivos de planificación, sujetos a la infraestructura elegida.
 
@@ -87,7 +87,7 @@ Meta sugerida:
 
 ## RNF-05: Disponibilidad
 
-El sistema debe estar disponible durante el semestre AGO-DIC 2026.
+El sistema debe estar disponible durante el semestre del taller.
 
 Objetivo sugerido:
 

@@ -72,6 +72,7 @@ public sealed class ExceptionHandlingMiddleware
             NotFoundException => (StatusCodes.Status404NotFound, "Not found.", null),
             ConflictException => (StatusCodes.Status409Conflict, "Conflict.", null),
             GoneException => (StatusCodes.Status410Gone, "Gone.", null),
+            ArgumentException => (StatusCodes.Status400BadRequest, "Invalid input.", null),
             _ => (StatusCodes.Status500InternalServerError, "Server error.", null)
         };
 }

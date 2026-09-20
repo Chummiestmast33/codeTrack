@@ -246,6 +246,9 @@ namespace Backend.Infrastructure.Persistence.Migrations
                     b.Property<long?>("FileSizeBytes")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("InstructorComment")
+                        .HasColumnType("text");
+
                     b.Property<DateTimeOffset?>("ReviewedAt")
                         .HasColumnType("timestamp with time zone");
 

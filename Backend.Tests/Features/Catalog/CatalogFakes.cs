@@ -38,6 +38,9 @@ public sealed class FakeSessionRepository : ISessionRepository
     public Task<IReadOnlyList<Guid>> GetTopicIdsAsync(Guid sessionId, CancellationToken ct) =>
         Task.FromResult<IReadOnlyList<Guid>>(_links.GetValueOrDefault(sessionId, []));
 
+    public Task<IReadOnlyList<Guid>> GetSessionIdsByTopicAsync(Guid topicId, CancellationToken ct) =>
+        Task.FromResult<IReadOnlyList<Guid>>(_links.Where(kv => kv.Value.Contains(topicId)).Select(kv => kv.Key).ToList());
+
     public Task ReplaceTopicsAsync(Guid sessionId, IReadOnlyList<Guid> topicIds, CancellationToken ct)
     {
         _links[sessionId] = topicIds.Distinct().ToList();
@@ -76,6 +79,10 @@ public sealed class FakeAttendanceRepository : IAttendanceRepository
         Task.FromResult<IReadOnlyList<AttendanceRecord>>(
             _records.Values.Where(a => a.SessionId == sessionId).OrderBy(a => a.CreatedAt).ToList());
 
+    public Task<IReadOnlyList<AttendanceRecord>> ListByUserAsync(Guid userId, CancellationToken ct) =>
+        Task.FromResult<IReadOnlyList<AttendanceRecord>>(
+            _records.Values.Where(a => a.UserId == userId).OrderBy(a => a.CreatedAt).ToList());
+
     public Task AddAsync(AttendanceRecord record, CancellationToken ct)
     {
         _records[record.Id] = record;
@@ -83,6 +90,14 @@ public sealed class FakeAttendanceRepository : IAttendanceRepository
     }
 
     public void Update(AttendanceRecord record) => _records[record.Id] = record;
+
+    public void SeedFor(Guid sessionId, Guid userId)
+    {
+        var record = AttendanceRecord.Register(
+            sessionId, userId, Domain.Enums.AttendanceStatus.Present, userId,
+            new DateTimeOffset(2026, 9, 19, 2, 0, 0, TimeSpan.Zero));
+        _records[record.Id] = record;
+    }
 }
 
 public sealed class FakeQrTokenRepository : IQrTokenRepository

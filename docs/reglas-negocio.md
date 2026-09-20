@@ -1,6 +1,6 @@
 # Reglas de negocio
 
-Proyecto: **Introducción a la Programación Competitiva** · Periodo: **AGO-DIC 2026**.
+Proyecto: **Introducción a la Programación Competitiva** · Periodo: **\<periodo>** (configurable por despliegue).
 
 ## RN-01: Número de control único
 
@@ -34,7 +34,7 @@ La entrega de una actividad puede contener una URL, un archivo o ambos, de acuer
 
 ## RN-08: Reportes oficiales
 
-Los reportes incluirán el nombre del proyecto, periodo AGO-DIC 2026, responsable y estudiante asesor.
+Los reportes incluirán el nombre del proyecto, periodo, responsable y estudiante asesor (valores configurables por despliegue).
 
 ## RN-09: Tiempo canónico en UTC
 

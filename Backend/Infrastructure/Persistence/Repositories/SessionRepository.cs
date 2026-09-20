@@ -25,6 +25,12 @@ public sealed class SessionRepository : ISessionRepository
             .Select(st => st.TopicId)
             .ToListAsync(cancellationToken);
 
+    public async Task<IReadOnlyList<Guid>> GetSessionIdsByTopicAsync(Guid topicId, CancellationToken cancellationToken) =>
+        await _db.SessionTopics
+            .Where(st => st.TopicId == topicId)
+            .Select(st => st.SessionId)
+            .ToListAsync(cancellationToken);
+
     public async Task ReplaceTopicsAsync(Guid sessionId, IReadOnlyList<Guid> topicIds, CancellationToken cancellationToken)
     {
         var existing = await _db.SessionTopics

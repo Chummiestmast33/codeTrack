@@ -10,6 +10,8 @@ public interface ISessionRepository
 
     Task<IReadOnlyList<Guid>> GetTopicIdsAsync(Guid sessionId, CancellationToken cancellationToken);
 
+    Task<IReadOnlyList<Guid>> GetSessionIdsByTopicAsync(Guid topicId, CancellationToken cancellationToken);
+
     Task ReplaceTopicsAsync(Guid sessionId, IReadOnlyList<Guid> topicIds, CancellationToken cancellationToken);
 
     Task AddAsync(Session session, CancellationToken cancellationToken);

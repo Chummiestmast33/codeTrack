@@ -90,3 +90,51 @@ GET {{Backend_HostAddress}}/api/sessions/{sessionId}/attendance
 Accept: application/json
 
 ###
+
+### Create activity (Administrator)
+POST {{Backend_HostAddress}}/api/activities
+Content-Type: application/json
+
+{
+  "title": "Actividad 1",
+  "markdownContent": "# Instrucciones",
+  "topicId": "{topicId}",
+  "sessionId": null,
+  "dueDate": "2026-12-01T00:00:00Z",
+  "submissionMode": "UrlOrFile"
+}
+
+###
+
+### Submit activity (authenticated student)
+POST {{Backend_HostAddress}}/api/activities/{activityId}/submissions
+Content-Type: application/json
+
+{
+  "url": "https://github.com/usuario/repo",
+  "storagePath": null,
+  "fileName": null,
+  "contentType": null,
+  "fileSizeBytes": null,
+  "comment": null
+}
+
+###
+
+### My progress (authenticated student)
+GET {{Backend_HostAddress}}/api/progress/me
+Accept: application/json
+
+###
+
+### Attendance report CSV (Administrator)
+GET {{Backend_HostAddress}}/api/reports/attendance?format=csv
+Accept: text/csv
+
+###
+
+### Progress report PDF (Administrator)
+GET {{Backend_HostAddress}}/api/reports/progress?format=pdf
+Accept: application/pdf
+
+###

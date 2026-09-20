@@ -27,6 +27,12 @@ export function AppLayout() {
             <NavLink to="/app/sessions" className={linkClass}>
               {t('nav.sessions')}
             </NavLink>
+            <NavLink to="/app/activities" className={linkClass}>
+              {t('nav.activities')}
+            </NavLink>
+            <NavLink to="/app/progress" className={linkClass}>
+              {t('nav.progress')}
+            </NavLink>
             <NavLink to="/app/me" className={linkClass}>
               {t('nav.profile')}
             </NavLink>
@@ -91,6 +97,36 @@ export function AdminLayout() {
               }
             >
               {t('nav.sessions')}
+            </NavLink>
+            <NavLink
+              to="/admin/activities"
+              className={({ isActive }) =>
+                `rounded-md px-3 py-2 text-sm font-medium ${
+                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
+                }`
+              }
+            >
+              {t('nav.activities')}
+            </NavLink>
+            <NavLink
+              to="/admin/progress"
+              className={({ isActive }) =>
+                `rounded-md px-3 py-2 text-sm font-medium ${
+                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
+                }`
+              }
+            >
+              {t('nav.progress')}
+            </NavLink>
+            <NavLink
+              to="/admin/reports"
+              className={({ isActive }) =>
+                `rounded-md px-3 py-2 text-sm font-medium ${
+                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
+                }`
+              }
+            >
+              {t('nav.reports')}
             </NavLink>
           </nav>
           <div className="flex items-center gap-3">

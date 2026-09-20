@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "CodeTrack",
-    "subtitle": "Introducción a la Programación Competitiva · AGO-DIC 2026",
+    "subtitle": "Introducción a la Programación Competitiva",
     "apiDocsPrefix": "Documentación viva de la API en",
     "devOnly": "(solo desarrollo)",
     "languageLabel": "Idioma"
@@ -12,7 +12,10 @@
     "admin": "Administración",
     "users": "Usuarios",
     "topics": "Temas",
-    "sessions": "Sesiones"
+    "sessions": "Sesiones",
+    "activities": "Actividades",
+    "progress": "Progreso",
+    "reports": "Reportes"
   },
   "common": {
     "save": "Guardar",
@@ -138,6 +141,75 @@
     "tokenPlaceholder": "Pega el código aquí",
     "submit": "Registrar",
     "backToSessions": "Volver a sesiones"
+  },
+  "activities": {
+    "title": "Actividades",
+    "create": "Nueva actividad",
+    "activityTitle": "Título",
+    "topic": "Tema",
+    "pickTopic": "Elige un tema…",
+    "status": "Estado",
+    "empty": "Aún no hay actividades.",
+    "publish": "Publicar",
+    "close": "Cerrar",
+    "due": "Vence",
+    "markdownHint": "Descripción en Markdown (títulos, listas, código…)",
+    "modes": {
+      "UrlOnly": "Solo URL",
+      "FileOnly": "Solo archivo",
+      "UrlOrFile": "URL o archivo",
+      "UrlAndFile": "URL y archivo"
+    },
+    "statuses": {
+      "Draft": "Borrador",
+      "Published": "Publicada",
+      "Closed": "Cerrada"
+    }
+  },
+  "submissions": {
+    "title": "Entregas ({{count}})",
+    "empty": "Aún no hay entregas.",
+    "deliver": "Entregar",
+    "deliveryHint": "Puedes volver a entregar; se guarda una nueva versión sin borrar las anteriores.",
+    "commentPlaceholder": "Comentario opcional",
+    "history": "Historial ({{count}})",
+    "noHistory": "Todavía no has entregado.",
+    "current": "Vigente",
+    "late": "tardía",
+    "submitted": "Entrega registrada.",
+    "submittedLate": "Entrega registrada después de la fecha límite.",
+    "review": "Guardar revisión",
+    "commentPlaceholderReview": "Observación para el alumno",
+    "instructorComment": "Observación",
+    "statuses": {
+      "Pending": "Pendiente",
+      "Submitted": "Entregado",
+      "Reviewed": "Revisado",
+      "Incomplete": "Incompleto"
+    }
+  },
+  "progress": {
+    "title": "Progreso por alumno",
+    "myTitle": "Mi progreso",
+    "status": "Estado",
+    "pickStudent": "Elige un alumno…",
+    "adjust": "Ajustar",
+    "clear": "Volver a automático",
+    "manual": "manual",
+    "reason": "Motivo",
+    "reasonPlaceholder": "Motivo del ajuste",
+    "statuses": {
+      "NotStarted": "No iniciado",
+      "InProgress": "En proceso",
+      "Completed": "Completado"
+    }
+  },
+  "reports": {
+    "title": "Reportes",
+    "description": "Documentos oficiales con encabezado del proyecto. Descarga en PDF o CSV.",
+    "attendance": "Lista de asistencia",
+    "progress": "Tabla de progreso",
+    "download": "Descargar {{format}}"
   },
   "errors": {    "400": "Revisa los datos enviados.",
     "401": "No tienes sesión iniciada.",

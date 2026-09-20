@@ -10,6 +10,8 @@ public interface IAttendanceRepository
 
     Task<IReadOnlyList<AttendanceRecord>> ListBySessionAsync(Guid sessionId, CancellationToken cancellationToken);
 
+    Task<IReadOnlyList<AttendanceRecord>> ListByUserAsync(Guid userId, CancellationToken cancellationToken);
+
     Task AddAsync(AttendanceRecord record, CancellationToken cancellationToken);
 
     void Update(AttendanceRecord record);

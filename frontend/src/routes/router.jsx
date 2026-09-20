@@ -13,6 +13,13 @@ import SessionsPage from '../features/admin/SessionsPage.jsx'
 import SessionDetailPage from '../features/admin/SessionDetailPage.jsx'
 import StudentSessionsPage from '../features/student/SessionsPage.jsx'
 import AttendPage from '../features/student/AttendPage.jsx'
+import StudentActivitiesPage from '../features/student/ActivitiesPage.jsx'
+import ActivityDetailPage from '../features/student/ActivityDetailPage.jsx'
+import MyProgressPage from '../features/student/MyProgressPage.jsx'
+import ActivitiesPage from '../features/admin/ActivitiesPage.jsx'
+import ActivitySubmissionsPage from '../features/admin/ActivitySubmissionsPage.jsx'
+import ProgressPage from '../features/admin/ProgressPage.jsx'
+import ReportsPage from '../features/admin/ReportsPage.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/app" replace /> },
@@ -48,6 +55,9 @@ const router = createBrowserRouter([
       { path: 'sessions', element: <StudentSessionsPage /> },
       { path: 'attend', element: <AttendPage /> },
       { path: 'attend/:token', element: <AttendPage /> },
+      { path: 'activities', element: <StudentActivitiesPage /> },
+      { path: 'activities/:id', element: <ActivityDetailPage /> },
+      { path: 'progress', element: <MyProgressPage /> },
       { path: '*', element: <NotFound /> },
     ],
   },
@@ -66,6 +76,10 @@ const router = createBrowserRouter([
       { path: 'topics', element: <TopicsPage /> },
       { path: 'sessions', element: <SessionsPage /> },
       { path: 'sessions/:id', element: <SessionDetailPage /> },
+      { path: 'activities', element: <ActivitiesPage /> },
+      { path: 'activities/:id/submissions', element: <ActivitySubmissionsPage /> },
+      { path: 'progress', element: <ProgressPage /> },
+      { path: 'reports', element: <ReportsPage /> },
       { path: '*', element: <NotFound /> },
     ],
   },

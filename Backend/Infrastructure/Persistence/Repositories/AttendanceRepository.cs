@@ -25,6 +25,12 @@ public sealed class AttendanceRepository : IAttendanceRepository
             .OrderBy(a => a.CreatedAt)
             .ToListAsync(cancellationToken);
 
+    public async Task<IReadOnlyList<AttendanceRecord>> ListByUserAsync(Guid userId, CancellationToken cancellationToken) =>
+        await _db.AttendanceRecords
+            .Where(a => a.UserId == userId)
+            .OrderBy(a => a.CreatedAt)
+            .ToListAsync(cancellationToken);
+
     public async Task AddAsync(AttendanceRecord record, CancellationToken cancellationToken) =>
         await _db.AttendanceRecords.AddAsync(record, cancellationToken);
 

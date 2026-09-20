@@ -34,6 +34,7 @@ public sealed class ExceptionHandlingTests
     [InlineData(typeof(NotFoundException), 404)]
     [InlineData(typeof(ConflictException), 409)]
     [InlineData(typeof(GoneException), 410)]
+    [InlineData(typeof(ArgumentException), 400)]
     [InlineData(typeof(InvalidOperationException), 500)]
     public async Task Maps_Exceptions_To_Status_Codes(Type errorType, int expectedStatus)
     {
@@ -44,6 +45,7 @@ public sealed class ExceptionHandlingTests
             _ when errorType == typeof(NotFoundException) => new NotFoundException("User", "x"),
             _ when errorType == typeof(ConflictException) => new ConflictException("dup"),
             _ when errorType == typeof(GoneException) => new GoneException("expired"),
+            _ when errorType == typeof(ArgumentException) => new ArgumentException("bad input"),
             _ when errorType == typeof(UnauthorizedException) => new UnauthorizedException(),
             _ when errorType == typeof(ForbiddenException) => new ForbiddenException("no"),
             _ => new InvalidOperationException("boom")
