@@ -25,6 +25,16 @@ public sealed class GoneException : Exception
     }
 }
 
+/// <summary>Report header (Reports section) is missing. Message lists field
+/// names only, never secret values, so it is safe to show.</summary>
+public sealed class ReportsNotConfiguredException : InvalidOperationException
+{
+    public ReportsNotConfiguredException(string message)
+        : base(message)
+    {
+    }
+}
+
 public sealed class UnauthorizedException : Exception
 {
     public UnauthorizedException(string message = "Invalid credentials.")

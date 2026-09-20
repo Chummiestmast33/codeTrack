@@ -42,7 +42,7 @@ public sealed class ReportOptions
 
         if (missing.Count > 0)
         {
-            throw new InvalidOperationException(
+            throw new Common.ReportsNotConfiguredException(
                 $"Report header is not configured (Reports section): {string.Join(", ", missing)}.");
         }
     }

@@ -69,6 +69,18 @@ public sealed class ExceptionHandlingTests
     }
 
     [Fact]
+    public async Task ReportsNotConfigured_Returns_Code_And_Safe_Detail()
+    {
+        var (status, contentType, body) = await RunAsync(
+            new ReportsNotConfiguredException("Report header is not configured (Reports section): ProjectName."));
+
+        Assert.Equal(500, status);
+        Assert.Equal("application/problem+json", contentType);
+        Assert.Contains("reports.not-configured", body);
+        Assert.Contains("Report header is not configured", body);
+    }
+
+    [Fact]
     public async Task Validation_Error_Includes_Errors_Extension()
     {
         var (status, _, body) = await RunAsync(

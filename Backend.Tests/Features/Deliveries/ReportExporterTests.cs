@@ -1,4 +1,5 @@
 using Backend.Application.Abstractions;
+using Backend.Application.Common;
 using Backend.Application.Features.Reporting;
 using Backend.Domain.Enums;
 using Backend.Infrastructure.Reporting;
@@ -23,7 +24,7 @@ public sealed class ReportExporterTests
     {
         var exporter = new ReportExporter(new OptionsWrapper<ReportOptions>(new ReportOptions()));
 
-        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+        var ex = await Assert.ThrowsAsync<ReportsNotConfiguredException>(() =>
             exporter.ExportAttendanceAsync(AttendanceSample(), ReportFormat.Csv, CancellationToken.None));
         Assert.Contains("ProjectName", ex.Message);
     }

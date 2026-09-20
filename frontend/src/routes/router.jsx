@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { AdminLayout, AppLayout } from '../components/Layouts.jsx'
-import { PublicOnly, RequireAdmin, RequireApproved, RequireAuth } from './guards.jsx'
+import { PublicOnly, RequireAdmin, RequireApproved, RequireAuth, RequireStudent } from './guards.jsx'
+import Landing from '../pages/Landing.jsx'
 import Login from '../pages/Login.jsx'
 import Register from '../pages/Register.jsx'
 import Pending from '../pages/Pending.jsx'
@@ -22,7 +23,7 @@ import ProgressPage from '../features/admin/ProgressPage.jsx'
 import ReportsPage from '../features/admin/ReportsPage.jsx'
 
 const router = createBrowserRouter([
-  { path: '/', element: <Navigate to="/app" replace /> },
+  { path: '/', element: <Landing /> },
   {
     path: '/login',
     element: (
@@ -45,7 +46,9 @@ const router = createBrowserRouter([
     element: (
       <RequireAuth>
         <RequireApproved>
-          <AppLayout />
+          <RequireStudent>
+            <AppLayout />
+          </RequireStudent>
         </RequireApproved>
       </RequireAuth>
     ),

@@ -29,6 +29,14 @@ export function RequireAdmin({ children }) {
   return children
 }
 
+export function RequireStudent({ children }) {
+  const { role, loading } = useAuth()
+
+  if (loading) return null
+  if (role === 'Administrator') return <Navigate to="/admin/users" replace />
+  return children
+}
+
 export function PublicOnly({ children }) {
   const { token, user, loading } = useAuth()
 

@@ -19,11 +19,12 @@ export function setToken(token) {
 }
 
 export class ApiError extends Error {
-  constructor(status, title, detail, errors) {
+  constructor(status, title, detail, errors, code) {
     super(detail || title || `Request failed (${status})`)
     this.status = status
     this.title = title
     this.errors = errors
+    this.code = code ?? null
   }
 }
 
@@ -53,6 +54,7 @@ export async function api(path, { method = 'GET', body, token } = {}) {
       data?.title,
       data?.detail,
       data?.errors ?? null,
+      data?.code ?? null,
     )
   }
 

@@ -25,8 +25,12 @@ export default function ReportsPage() {
       a.click()
       a.remove()
       setTimeout(() => URL.revokeObjectURL(url), 5000)
-    } catch {
-      setError(t('errors.500'))
+    } catch (err) {
+      if (err?.code === 'reports.not-configured') {
+        setError(t('reports.notConfigured'))
+      } else {
+        setError(t('errors.500'))
+      }
     } finally {
       setBusy(null)
     }

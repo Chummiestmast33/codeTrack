@@ -218,7 +218,8 @@
     "description": "Documentos oficiales con encabezado del proyecto. Descarga en PDF o CSV.",
     "attendance": "Lista de asistencia",
     "progress": "Tabla de progreso",
-    "download": "Descargar {{format}}"
+    "download": "Descargar {{format}}",
+    "notConfigured": "Falta configurar el encabezado oficial (sección Reports del servidor). Pide al responsable que lo configure e inténtalo de nuevo."
   },
   "errors": {
     "400": "Revisa los datos enviados.",
