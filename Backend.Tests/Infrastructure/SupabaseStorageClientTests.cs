@@ -91,6 +91,16 @@ public sealed class SupabaseStorageClientTests
     }
 
     [Fact]
+    public async Task Absolute_Url_With_Query_Is_Returned_Untouched()
+    {
+        var (client, _) = Create(_ => Json("{\"url\":\"https://xxxx.supabase.co/signed/up?token=t\",\"token\":\"t\",\"signedURL\":\"https://cdn.example.com/signed/dl\"}").ToMessage());
+
+        var ticket = await client.GetUploadUrlAsync("k", "text/plain", 1, CancellationToken.None);
+
+        Assert.Equal("https://xxxx.supabase.co/signed/up?token=t", ticket.UploadUrl);
+    }
+
+    [Fact]
     public async Task Delete_Calls_Object_Endpoint()
     {
         var (client, handler) = Create(_ => new HttpResponseMessage(HttpStatusCode.OK));

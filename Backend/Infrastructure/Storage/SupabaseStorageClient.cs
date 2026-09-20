@@ -113,9 +113,13 @@ public sealed class SupabaseStorageClient : IFileStorage
 
     private string CombineUrl(string pathOrUrl)
     {
-        if (Uri.TryCreate(pathOrUrl, UriKind.Absolute, out var absolute))
+        // Explicit scheme check: Uri.TryCreate with UriKind.Absolute is
+        // platform-dependent (a leading '/' parses as file:// on Linux
+        // but is rejected on Windows), which broke CI once already.
+        if (pathOrUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+            || pathOrUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
         {
-            return absolute.ToString();
+            return pathOrUrl;
         }
 
         return $"{_options.Endpoint.TrimEnd('/')}/{pathOrUrl.TrimStart('/')}";
