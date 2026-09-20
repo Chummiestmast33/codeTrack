@@ -16,6 +16,7 @@ export const submitActivity = (activityId, payload) =>
   api(`/api/activities/${activityId}/submissions`, { method: 'POST', body: payload })
 export const mySubmissionHistory = (activityId) => api(`/api/activities/${activityId}/submissions/me`)
 export const submissionsByActivity = (activityId) => api(`/api/admin/activities/${activityId}/submissions`)
+export const submissionFile = (id) => api(`/api/admin/submissions/${id}/file`)
 export const reviewSubmission = (id, payload) =>
   api(`/api/admin/submissions/${id}/status`, { method: 'PATCH', body: payload })
 

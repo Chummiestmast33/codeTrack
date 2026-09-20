@@ -6,6 +6,7 @@ import { getActivity } from '../../api/activities.js'
 import { reviewSubmission, submissionsByActivity } from '../../api/deliveries.js'
 import { ApiError } from '../../api/client.js'
 import SafeMarkdown from '../../components/SafeMarkdown.jsx'
+import SubmissionFileActions from './SubmissionFileActions.jsx'
 import { formatDateTime } from '../../utils/format.js'
 import { getLanguage } from '../../i18n.js'
 
@@ -119,6 +120,7 @@ export default function ActivitySubmissionsPage() {
                 </div>
                 {row.url && <a href={row.url} target="_blank" rel="noreferrer" className="mt-1 block break-all text-accent underline">{row.url}</a>}
                 {row.fileName && <p className="mt-1 text-muted">{row.fileName}{row.fileSizeBytes ? ` (${Math.round(row.fileSizeBytes / 1024)} KB)` : ''}</p>}
+                <SubmissionFileActions submission={row} />
                 {row.comment && <p className="mt-1 italic text-muted">“{row.comment}”</p>}
                 {row.instructorComment && <p className="mt-1 text-ink">{t('submissions.instructorComment')}: {row.instructorComment}</p>}
                 <p className="mt-1 text-sm text-muted">{formatDateTime(row.submittedAt, lang)}</p>

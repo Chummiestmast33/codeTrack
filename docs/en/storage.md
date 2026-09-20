@@ -79,9 +79,35 @@ API has inspected the uploaded bytes; do not describe signed PUT as a complete b
 
 ## Independent download and cleanup
 
-The S3 adapter implements signed GET, but no current controller exposes a download endpoint
-and `SubmissionDto` contains `storagePath`, not a download URL. Verify S3 independently with
-AWS CLI using the variables above; this is not an application download E2E test:
+Administrators can now download or preview each submitted file in the activity submissions panel.
+The panel requests `GET /api/admin/submissions/{id}/file` with the API bearer token.
+The backend checks the administrator's current approval/active status, resolves that exact version
+and returns `downloadUrl` and `fileName`. Responses use Cache-Control no-store.
+Unknown submissions and URL-only submissions return 404; students and inactive administrators
+cannot obtain a ticket. Existing files require no migration or re-upload.
+
+The browser fetches the signed URL without the API bearer token. Storage CORS must allow
+GET from the frontend origin as well as PUT. Each click requests a fresh signed URL using
+`Storage:DownloadUrlExpiryMinutes` (60 by default). Downloads preserve the filename.
+Preview supports plain text/code/Markdown, PNG/JPEG/WebP and PDF in a dialog; text is escaped
+and PDF bytes are displayed by the native browser viewer after checking the PDF header. Browser PDF support varies; download remains available.
+A deleted object, expired URL or storage CORS failure displays an error with retry available.
+
+To check the endpoint from PowerShell, use an authenticated administrator (not the student
+headers in the upload example) and an existing submission with a file:
+
+```powershell
+$adminLogin = @{ controlNumber = '<admin-control-number>'; password = (Read-Host 'Admin password' -MaskInput) }
+$adminAuth = Invoke-RestMethod "$api/api/auth/login" -Method Post -ContentType 'application/json' -Body ($adminLogin | ConvertTo-Json)
+$adminHeaders = @{ Authorization = "Bearer $($adminAuth.token)" }
+$submissionId = '<submission-guid>'
+$fileTicket = Invoke-RestMethod "$api/api/admin/submissions/$submissionId/file" -Headers $adminHeaders
+Invoke-WebRequest $fileTicket.downloadUrl -OutFile (Join-Path $env:TEMP 'submission-download.txt')
+Remove-Variable adminLogin,adminAuth,adminHeaders,fileTicket
+```
+
+Alternatively, verify S3 independently with AWS CLI using the earlier upload variables.
+This checks storage access, not application authorization:
 
 ```powershell
 $downloadUrl = aws s3 presign "s3://submissions/$($ticket.storagePath)" --endpoint-url $endpoint --expires-in 60

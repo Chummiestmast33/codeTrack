@@ -195,7 +195,12 @@
     },
     "file": "Archivo",
     "url": "Enlace de entrega",
-    "statusLabel": "Estado de entrega"
+    "statusLabel": "Estado de entrega",
+    "downloadFile": "Descargar archivo",
+    "previewFile": "Vista previa",
+    "closePreview": "Cerrar",
+    "fileAccessError": "No se pudo acceder al archivo. Intenta de nuevo; si persiste, comprueba que siga disponible.",
+    "previewHint": "Si el navegador no puede mostrar este formato, descarga el archivo."
   },
   "progress": {
     "title": "Progreso por alumno",
