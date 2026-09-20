@@ -57,6 +57,18 @@ public sealed class OperationalTests
     }
 
     [Fact]
+    public async Task Health_Stays_Healthy_When_Migration_Count_Fails()
+    {
+        using var db = InMemoryDb(new ActorContext(null), Guid.NewGuid().ToString());
+
+        var check = new PostgresHealthCheck(db);
+        var result = await check.CheckHealthAsync(new HealthCheckContext());
+
+        Assert.Equal(HealthStatus.Healthy, result.Status);
+        Assert.Equal("unknown", result.Data["appliedMigrations"]);
+    }
+
+    [Fact]
     public async Task Health_Is_Unhealthy_When_Postgres_Unreachable()
     {
         using var db = new TallerDbContext(
