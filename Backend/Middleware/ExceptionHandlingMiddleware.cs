@@ -71,6 +71,7 @@ public sealed class ExceptionHandlingMiddleware
             ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden.", null),
             NotFoundException => (StatusCodes.Status404NotFound, "Not found.", null),
             ConflictException => (StatusCodes.Status409Conflict, "Conflict.", null),
+            GoneException => (StatusCodes.Status410Gone, "Gone.", null),
             _ => (StatusCodes.Status500InternalServerError, "Server error.", null)
         };
 }

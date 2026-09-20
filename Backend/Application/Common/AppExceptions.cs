@@ -17,6 +17,14 @@ public sealed class ConflictException : Exception
     }
 }
 
+public sealed class GoneException : Exception
+{
+    public GoneException(string message)
+        : base(message)
+    {
+    }
+}
+
 public sealed class UnauthorizedException : Exception
 {
     public UnauthorizedException(string message = "Invalid credentials.")

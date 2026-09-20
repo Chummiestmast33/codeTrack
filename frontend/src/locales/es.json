@@ -10,7 +10,9 @@
     "dashboard": "Inicio",
     "profile": "Mi perfil",
     "admin": "Administración",
-    "users": "Usuarios"
+    "users": "Usuarios",
+    "topics": "Temas",
+    "sessions": "Sesiones"
   },
   "common": {
     "save": "Guardar",
@@ -73,8 +75,71 @@
       }
     }
   },
-  "errors": {
-    "400": "Revisa los datos enviados.",
+  "topics": {
+    "title": "Temas",
+    "create": "Nuevo tema",
+    "name": "Nombre",
+    "description": "Descripción",
+    "order": "Orden",
+    "status": "Estado",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "edit": "Editar",
+    "activate": "Activar",
+    "deactivate": "Desactivar"
+  },
+  "sessions": {
+    "title": "Sesiones",
+    "create": "Nueva sesión",
+    "sessionTitle": "Título",
+    "description": "Descripción",
+    "date": "Fecha",
+    "topics": "Temas",
+    "status": "Estado",
+    "empty": "Aún no hay sesiones.",
+    "markImparted": "Marcar impartida",
+    "cancel": "Cancelar",
+    "statuses": {
+      "Planned": "Planeada",
+      "Imparted": "Impartida",
+      "Cancelled": "Cancelada"
+    }
+  },
+  "attendance": {
+    "title": "Asistencia ({{count}})",
+    "empty": "Nadie ha registrado asistencia aún.",
+    "status": "Estado",
+    "observation": "Observación",
+    "manualTitle": "Registro manual",
+    "pickStudent": "Elige un alumno…",
+    "statuses": {
+      "Present": "Presente",
+      "Absent": "Falta",
+      "Late": "Retardo",
+      "Excused": "Justificado"
+    }
+  },
+  "qr": {
+    "title": "Código QR",
+    "show": "Ver QR",
+    "generate": "Generar QR",
+    "regenerate": "Regenerar",
+    "download": "Descargar PNG",
+    "expires": "Vence: {{date}}",
+    "expired": "No hay un QR vigente para esta sesión."
+  },
+  "attend": {
+    "title": "Registrar asistencia",
+    "success": "Asistencia registrada.",
+    "duplicate": "Ya tienes asistencia registrada en esta sesión.",
+    "expired": "El QR expiró. Pide al instructor el registro manual.",
+    "registerCta": "Registrar asistencia",
+    "tokenLabel": "Código del QR",
+    "tokenPlaceholder": "Pega el código aquí",
+    "submit": "Registrar",
+    "backToSessions": "Volver a sesiones"
+  },
+  "errors": {    "400": "Revisa los datos enviados.",
     "401": "No tienes sesión iniciada.",
     "403": "No tienes acceso.",
     "404": "No se encontró el recurso.",

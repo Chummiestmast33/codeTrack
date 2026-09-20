@@ -39,6 +39,15 @@ public sealed class Session : AuditableEntity
         return new Session(title.Trim(), description, sessionDate, createdBy, now);
     }
 
+    public void UpdateDetails(string? title, string? description, DateTimeOffset sessionDate, DateTimeOffset now)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(title);
+        Title = title.Trim();
+        Description = description;
+        SessionDate = sessionDate;
+        Touch(now);
+    }
+
     public void MarkImparted(DateTimeOffset now)
     {
         Status = SessionStatus.Imparted;

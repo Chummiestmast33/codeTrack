@@ -24,6 +24,9 @@ export function AppLayout() {
             <NavLink to="/app" end className={linkClass}>
               {t('nav.dashboard')}
             </NavLink>
+            <NavLink to="/app/sessions" className={linkClass}>
+              {t('nav.sessions')}
+            </NavLink>
             <NavLink to="/app/me" className={linkClass}>
               {t('nav.profile')}
             </NavLink>
@@ -68,6 +71,26 @@ export function AdminLayout() {
               }
             >
               {t('nav.users')}
+            </NavLink>
+            <NavLink
+              to="/admin/topics"
+              className={({ isActive }) =>
+                `rounded-md px-3 py-2 text-sm font-medium ${
+                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
+                }`
+              }
+            >
+              {t('nav.topics')}
+            </NavLink>
+            <NavLink
+              to="/admin/sessions"
+              className={({ isActive }) =>
+                `rounded-md px-3 py-2 text-sm font-medium ${
+                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
+                }`
+              }
+            >
+              {t('nav.sessions')}
             </NavLink>
           </nav>
           <div className="flex items-center gap-3">

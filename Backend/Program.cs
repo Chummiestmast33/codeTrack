@@ -1,7 +1,10 @@
 using Backend.Api;
 using Backend.Application.Abstractions;
 using Backend.Application.Common;
+using Backend.Application.Features.Attendance;
 using Backend.Application.Features.Identity;
+using Backend.Application.Features.Sessions;
+using Backend.Application.Features.Topics;
 using Backend.Infrastructure;
 using Backend.Middleware;
 using Backend.OpenApi;
@@ -35,6 +38,16 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Progr
 builder.Services.AddTransient<IValidator<RegisterStudentCommand>, RegisterStudentValidator>();
 builder.Services.AddTransient<IValidator<LoginCommand>, LoginValidator>();
 builder.Services.AddTransient<IValidator<ResetPasswordCommand>, ResetPasswordValidator>();
+builder.Services.AddTransient<IValidator<CreateTopicCommand>, CreateTopicValidator>();
+builder.Services.AddTransient<IValidator<UpdateTopicCommand>, UpdateTopicValidator>();
+builder.Services.AddTransient<IValidator<CreateSessionCommand>, CreateSessionValidator>();
+builder.Services.AddTransient<IValidator<UpdateSessionCommand>, UpdateSessionValidator>();
+builder.Services.AddTransient<IValidator<RegisterManualAttendanceCommand>, RegisterManualAttendanceValidator>();
+builder.Services.AddTransient<IValidator<UpdateAttendanceCommand>, UpdateAttendanceValidator>();
+builder.Services.AddTransient<IValidator<RegisterAttendanceByQrCommand>, RegisterAttendanceByQrValidator>();
+builder.Services.AddScoped<SessionManager>();
+builder.Services.AddScoped<AttendanceEnricher>();
+builder.Services.AddScoped<QrTicketBuilder>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddInfrastructure(builder.Configuration);

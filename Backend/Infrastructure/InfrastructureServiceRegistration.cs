@@ -2,6 +2,7 @@ using System.Text;
 using Backend.Application.Abstractions;
 using Backend.Infrastructure.Persistence;
 using Backend.Infrastructure.Persistence.Repositories;
+using Backend.Infrastructure.Qr;
 using Backend.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,10 +21,16 @@ public static class InfrastructureServiceRegistration
         services.AddDbContext<TallerDbContext>(options => options.UseNpgsql(connectionString));
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITopicRepository, TopicRepository>();
+        services.AddScoped<ISessionRepository, SessionRepository>();
+        services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+        services.AddScoped<IQrTokenRepository, QrTokenRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<IPasswordHasher, AspNetPasswordHasher>();
         services.AddSingleton<IUserTokenService, JwtTokenService>();
+        services.AddSingleton<IQrCodeGenerator, QrCodeGenerator>();
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+        services.Configure<QrOptions>(configuration.GetSection(QrOptions.SectionName));
 
         var jwt = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
         if (jwt.Secret.Length < 32)

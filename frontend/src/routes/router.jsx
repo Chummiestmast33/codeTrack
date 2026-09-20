@@ -8,6 +8,11 @@ import Dashboard from '../pages/Dashboard.jsx'
 import Profile from '../pages/Profile.jsx'
 import NotFound from '../pages/NotFound.jsx'
 import UsersPage from '../features/admin/UsersPage.jsx'
+import TopicsPage from '../features/admin/TopicsPage.jsx'
+import SessionsPage from '../features/admin/SessionsPage.jsx'
+import SessionDetailPage from '../features/admin/SessionDetailPage.jsx'
+import StudentSessionsPage from '../features/student/SessionsPage.jsx'
+import AttendPage from '../features/student/AttendPage.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/app" replace /> },
@@ -40,6 +45,9 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'me', element: <Profile /> },
+      { path: 'sessions', element: <StudentSessionsPage /> },
+      { path: 'attend', element: <AttendPage /> },
+      { path: 'attend/:token', element: <AttendPage /> },
       { path: '*', element: <NotFound /> },
     ],
   },
@@ -55,6 +63,9 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="users" replace /> },
       { path: 'users', element: <UsersPage /> },
+      { path: 'topics', element: <TopicsPage /> },
+      { path: 'sessions', element: <SessionsPage /> },
+      { path: 'sessions/:id', element: <SessionDetailPage /> },
       { path: '*', element: <NotFound /> },
     ],
   },
