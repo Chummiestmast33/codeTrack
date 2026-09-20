@@ -3,6 +3,9 @@
 CodeTrack manages student approval, topics, sessions, manual and QR attendance,
 versioned submissions, topic progress, and PDF/CSV reports for a programming workshop.
 
+## Docs
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Chummiestmast33/codeTrack)
+
 ## Stack and structure
 
 - ASP.NET Core 10 Controllers API, EF Core 10/Npgsql, PostgreSQL 17, MediatR and FluentValidation.
