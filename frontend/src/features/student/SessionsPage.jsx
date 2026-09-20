@@ -33,10 +33,10 @@ export default function StudentSessionsPage() {
     }
   }, [])
 
-  if (loading) return <p className="text-slate-600">{t('common.loading')}</p>
+  if (loading) return <p role="status" className="state-message">{t('common.loading')}</p>
   if (error) {
     return (
-      <p role="alert" className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+      <p role="alert" className="mt-4 alert alert-danger">
         {error instanceof ApiError ? t(`errors.${error.status}`, { defaultValue: t('errors.500') }) : t('errors.500')}
       </p>
     )
@@ -44,20 +44,20 @@ export default function StudentSessionsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">{t('sessions.title')}</h1>
+      <h1 className="page-title">{t('sessions.title')}</h1>
       {sessions.length === 0 ? (
-        <p className="mt-4 text-slate-600">{t('sessions.empty')}</p>
+        <p role="status" className="state-message">{t('sessions.empty')}</p>
       ) : (
-        <ul className="mt-4 space-y-3">
+        <ul className="mt-6 space-y-4">
           {sessions.map((s) => (
-            <li key={s.id} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+            <li key={s.id} className="card">
               <p className="font-bold">{s.title}</p>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-muted">
                 {formatDateTime(s.sessionDate, lang)} · {t(`sessions.statuses.${s.status}`, { defaultValue: s.status })}
               </p>
-              <p className="text-sm text-slate-500">{s.topics.map((x) => x.name).join(', ')}</p>
+              <p className="text-sm text-muted">{s.topics.map((x) => x.name).join(', ')}</p>
               {s.status === 'Planned' && (
-                <Link to="/app/attend" className="mt-2 inline-block text-sm font-medium text-indigo-600 underline">
+                <Link to="/app/attend" className="mt-2 inline-block text-sm font-medium text-accent underline">
                   {t('attend.registerCta')}
                 </Link>
               )}

@@ -33,10 +33,10 @@ export default function StudentActivitiesPage() {
     }
   }, [])
 
-  if (loading) return <p className="text-slate-600">{t('common.loading')}</p>
+  if (loading) return <p role="status" className="state-message">{t('common.loading')}</p>
   if (error) {
     return (
-      <p role="alert" className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+      <p role="alert" className="mt-4 alert alert-danger">
         {error instanceof ApiError ? t(`errors.${error.status}`, { defaultValue: t('errors.500') }) : t('errors.500')}
       </p>
     )
@@ -44,15 +44,15 @@ export default function StudentActivitiesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">{t('activities.title')}</h1>
+      <h1 className="page-title">{t('activities.title')}</h1>
       {activities.length === 0 ? (
-        <p className="mt-4 text-slate-600">{t('activities.empty')}</p>
+        <p role="status" className="state-message">{t('activities.empty')}</p>
       ) : (
-        <ul className="mt-4 space-y-3">
+        <ul className="mt-6 space-y-4">
           {activities.map((a) => (
-            <li key={a.id} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-              <Link to={`/app/activities/${a.id}`} className="font-bold text-indigo-600 underline">{a.title}</Link>
-              <p className="text-sm text-slate-500">
+            <li key={a.id} className="card">
+              <Link to={`/app/activities/${a.id}`} className="font-bold text-accent underline">{a.title}</Link>
+              <p className="text-sm text-muted">
                 {a.topicName}
                 {a.dueDate ? ` · ${t('activities.due')}: ${formatDate(a.dueDate, lang)}` : ''}
               </p>

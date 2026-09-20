@@ -1,3 +1,4 @@
+import FormField from '../../components/FormField.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
@@ -75,28 +76,28 @@ export default function ActivitySubmissionsPage() {
     setReview((r) => ({ ...r, [rowId]: { status: 'Reviewed', comment: '', ...r[rowId], ...patch } }))
   }
 
-  if (loading) return <p className="text-slate-600">{t('common.loading')}</p>
+  if (loading) return <p role="status" className="state-message">{t('common.loading')}</p>
   if (error && !activity) {
     return (
-      <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+      <p role="alert" className="alert alert-danger">
         {error instanceof ApiError ? t(`errors.${error.status}`, { defaultValue: t('errors.500') }) : t('errors.500')}
       </p>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">{activity.title}</h1>
-        <p className="text-sm text-slate-500">{activity.topicName} · {t(`activities.statuses.${activity.status}`, { defaultValue: activity.status })}</p>
+        <h1 className="page-title">{activity.title}</h1>
+        <p className="text-sm text-muted">{activity.topicName} · {t(`activities.statuses.${activity.status}`, { defaultValue: activity.status })}</p>
       </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="card">
         <SafeMarkdown text={activity.markdownContent} />
       </section>
 
       {error && (
-        <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="alert alert-danger">
           {error instanceof ApiError ? t(`errors.${error.status}`, { defaultValue: t('errors.500') }) : t('errors.500')}
         </p>
       )}
@@ -104,39 +105,39 @@ export default function ActivitySubmissionsPage() {
       <section>
         <h2 className="font-bold">{t('submissions.title', { count: rows.length })}</h2>
         {rows.length === 0 ? (
-          <p className="mt-2 text-slate-600">{t('submissions.empty')}</p>
+          <p role="status" className="state-message">{t('submissions.empty')}</p>
         ) : (
-          <div className="mt-3 space-y-3">
+          <div className="mt-6 space-y-6">
             {rows.map((row) => (
-              <article key={row.id} className="rounded-lg border border-slate-200 bg-white p-4 text-sm shadow-sm">
+              <article key={row.id} className="card text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-bold">{row.fullName} <span className="font-mono font-normal text-slate-500">{row.controlNumber}</span></p>
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${row.status === 'Reviewed' ? 'bg-green-100 text-green-800' : row.status === 'Incomplete' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'}`}>
+                  <p className="font-bold">{row.fullName} <span className="font-mono font-normal text-muted">{row.controlNumber}</span></p>
+                  <span className={`badge ${row.status === 'Reviewed' ? 'bg-success-soft text-success' : row.status === 'Incomplete' ? 'bg-danger-soft text-danger' : 'bg-warning-soft text-warning'}`}>
                     {t(`submissions.statuses.${row.status}`)} · v{row.versionNumber}
                     {row.isLate ? ` · ${t('submissions.late')}` : ''}
                   </span>
                 </div>
-                {row.url && <a href={row.url} target="_blank" rel="noreferrer" className="mt-1 block break-all text-indigo-600 underline">{row.url}</a>}
-                {row.fileName && <p className="mt-1 text-slate-600">{row.fileName}{row.fileSizeBytes ? ` (${Math.round(row.fileSizeBytes / 1024)} KB)` : ''}</p>}
-                {row.comment && <p className="mt-1 italic text-slate-600">“{row.comment}”</p>}
-                {row.instructorComment && <p className="mt-1 text-slate-700">{t('submissions.instructorComment')}: {row.instructorComment}</p>}
-                <p className="mt-1 text-xs text-slate-400">{formatDateTime(row.submittedAt, lang)}</p>
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <select
+                {row.url && <a href={row.url} target="_blank" rel="noreferrer" className="mt-1 block break-all text-accent underline">{row.url}</a>}
+                {row.fileName && <p className="mt-1 text-muted">{row.fileName}{row.fileSizeBytes ? ` (${Math.round(row.fileSizeBytes / 1024)} KB)` : ''}</p>}
+                {row.comment && <p className="mt-1 italic text-muted">“{row.comment}”</p>}
+                {row.instructorComment && <p className="mt-1 text-ink">{t('submissions.instructorComment')}: {row.instructorComment}</p>}
+                <p className="mt-1 text-sm text-muted">{formatDateTime(row.submittedAt, lang)}</p>
+                <div className="form-actions">
+                  <FormField label={t('submissions.statusLabel')}><select aria-label={t('submissions.statusLabel')}
                     value={review[row.id]?.status ?? 'Reviewed'}
                     onChange={(e) => setDraft(row.id, { status: e.target.value })}
-                    className="rounded-md border border-slate-300 px-2 py-1.5 text-xs"
+                    className="field"
                   >
                     <option value="Reviewed">{t('submissions.statuses.Reviewed')}</option>
                     <option value="Incomplete">{t('submissions.statuses.Incomplete')}</option>
-                  </select>
-                  <input
+                  </select></FormField>
+                  <FormField label={t('submissions.commentPlaceholder')}><input aria-label={t('submissions.commentPlaceholder')}
                     value={review[row.id]?.comment ?? ''}
                     onChange={(e) => setDraft(row.id, { comment: e.target.value })}
                     placeholder={t('submissions.commentPlaceholder')}
-                    className="min-w-52 flex-1 rounded-md border border-slate-300 px-2 py-1.5 text-xs"
-                  />
-                  <button disabled={busy} onClick={() => onReview(row)} className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 disabled:opacity-50">
+                    className="min-w-0 flex-1 field"
+                  /></FormField>
+                  <button disabled={busy} onClick={() => onReview(row)} className="btn btn-primary">
                     {t('submissions.review')}
                   </button>
                 </div>

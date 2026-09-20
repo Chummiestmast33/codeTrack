@@ -1,148 +1,98 @@
-import { Link, NavLink, Outlet } from 'react-router'
+﻿import { useEffect, useRef, useState } from 'react'
+import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../features/auth/AuthContext.jsx'
-import LanguageSelector from '../components/LanguageSelector.jsx'
+import LanguageSelector from './LanguageSelector.jsx'
+import Icon from './Icon.jsx'
+import { MotionToggle } from './VisualEffects.jsx'
 
-function linkClass({ isActive }) {
-  return `rounded-md px-3 py-2 text-sm font-medium ${
-    isActive ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
-  }`
-}
+const studentLinks = ['dashboard', 'sessions', 'activities', 'progress', 'profile']
+const adminLinks = ['users', 'topics', 'sessions', 'activities', 'progress', 'reports']
 
-export function AppLayout() {
+function Header({ admin }) {
   const { t } = useTranslation()
   const { user, logout } = useAuth()
+  const [open, setOpen] = useState(false)
+  const toggle = useRef(null)
+  const base = admin ? '/admin' : '/app'
+  const links = admin ? adminLinks : studentLinks
+
+  useEffect(() => {
+    if (!open) return
+    function onKeyDown(event) {
+      if (event.key === 'Escape') {
+        setOpen(false)
+        toggle.current?.focus()
+      }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [open])
+
+  function navigation() {
+    return (
+      <nav className="navigation-links" aria-label={t('nav.main')}>
+        {links.map((name) => (
+          <NavLink key={name} to={name === 'dashboard' ? base : `${base}/${name === 'profile' ? 'me' : name}`}
+            end={name === 'dashboard'} onClick={() => setOpen(false)}
+            className={({ isActive }) => `nav-link${isActive ? ' nav-link-active' : ''}`}>
+            <Icon name={name} /><span>{t(`nav.${name}`)}</span>
+          </NavLink>
+        ))}
+      </nav>
+    )
+  }
+
+  function account() {
+    return (
+      <div className="account-actions">
+        <MotionToggle />
+        <LanguageSelector />
+        <button type="button" onClick={logout} className="btn logout-button" aria-label={t('auth.logout')} title={t('auth.logout')}><Icon name="logout" /><span>{t('auth.logout')}</span></button>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
-          <Link to="/app" className="text-lg font-bold tracking-tight">
-            {t('app.title')}
-          </Link>
-          <nav className="flex items-center gap-1">
-            <NavLink to="/app" end className={linkClass}>
-              {t('nav.dashboard')}
-            </NavLink>
-            <NavLink to="/app/sessions" className={linkClass}>
-              {t('nav.sessions')}
-            </NavLink>
-            <NavLink to="/app/activities" className={linkClass}>
-              {t('nav.activities')}
-            </NavLink>
-            <NavLink to="/app/progress" className={linkClass}>
-              {t('nav.progress')}
-            </NavLink>
-            <NavLink to="/app/me" className={linkClass}>
-              {t('nav.profile')}
-            </NavLink>
-          </nav>
-          <div className="flex items-center gap-3">
-            <span className="hidden text-sm text-slate-500 sm:inline">{user?.fullName}</span>
-            <LanguageSelector />
-            <button
-              onClick={logout}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100"
-            >
-              {t('auth.logout')}
-            </button>
-          </div>
-        </div>
-      </header>
-      <main className="mx-auto max-w-5xl px-6 py-8">
-        <Outlet />
-      </main>
-    </div>
+    <header className="app-header">
+      <a className="skip-link btn btn-primary" href="#main-content">{t('nav.skipContent')}</a>
+      <div className="container-page header-row">
+        <Link to={admin ? '/admin/users' : '/app'} className="brand">
+          <span className="brand-symbol"><Icon name="code" /></span>
+          <span>{t('app.title')}<span className="brand-caption">{t(admin ? 'nav.admin' : 'visual.workshop')}</span></span>
+        </Link>
+        <div className="desktop-navigation">{navigation()}{account()}</div>
+        <button ref={toggle} type="button" className="btn menu-toggle" aria-expanded={open}
+          aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>
+          <Icon name={open ? 'close' : 'menu'} />{t(open ? 'nav.closeMenu' : 'nav.openMenu')}
+        </button>
+      </div>
+      <div id="mobile-navigation" hidden={!open} className="container-page mobile-navigation">
+        {navigation()}
+        {user?.fullName && <p className="account-name mt-4">{user.fullName}</p>}
+        {account()}
+      </div>
+    </header>
   )
 }
 
-export function AdminLayout() {
+function Layout({ admin = false }) {
+  const location = useLocation()
   const { t } = useTranslation()
-  const { logout } = useAuth()
-
+  const { user } = useAuth()
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b border-slate-200 bg-slate-900 text-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
-          <Link to="/admin/users" className="text-lg font-bold tracking-tight">
-            {t('app.title')} · {t('nav.admin')}
-          </Link>
-          <nav className="flex items-center gap-1">
-            <NavLink
-              to="/admin/users"
-              className={({ isActive }) =>
-                `rounded-md px-3 py-2 text-sm font-medium ${
-                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
-                }`
-              }
-            >
-              {t('nav.users')}
-            </NavLink>
-            <NavLink
-              to="/admin/topics"
-              className={({ isActive }) =>
-                `rounded-md px-3 py-2 text-sm font-medium ${
-                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
-                }`
-              }
-            >
-              {t('nav.topics')}
-            </NavLink>
-            <NavLink
-              to="/admin/sessions"
-              className={({ isActive }) =>
-                `rounded-md px-3 py-2 text-sm font-medium ${
-                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
-                }`
-              }
-            >
-              {t('nav.sessions')}
-            </NavLink>
-            <NavLink
-              to="/admin/activities"
-              className={({ isActive }) =>
-                `rounded-md px-3 py-2 text-sm font-medium ${
-                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
-                }`
-              }
-            >
-              {t('nav.activities')}
-            </NavLink>
-            <NavLink
-              to="/admin/progress"
-              className={({ isActive }) =>
-                `rounded-md px-3 py-2 text-sm font-medium ${
-                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
-                }`
-              }
-            >
-              {t('nav.progress')}
-            </NavLink>
-            <NavLink
-              to="/admin/reports"
-              className={({ isActive }) =>
-                `rounded-md px-3 py-2 text-sm font-medium ${
-                  isActive ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800'
-                }`
-              }
-            >
-              {t('nav.reports')}
-            </NavLink>
-          </nav>
-          <div className="flex items-center gap-3">
-            <LanguageSelector />
-            <button
-              onClick={logout}
-              className="rounded-md border border-slate-600 px-3 py-1.5 text-sm text-slate-200 hover:bg-slate-800"
-            >
-              {t('auth.logout')}
-            </button>
-          </div>
+    <div className="app-shell">
+      <Header key={location.pathname} admin={admin} />
+      <main id="main-content" tabIndex={-1} className="container-page page-content">
+        <div className="workspace-context">
+          <p className="eyebrow"><span className="status-dot" />{t(admin ? 'visual.adminSpace' : 'visual.studentSpace')}</p>
+          <span className="workspace-user"><Icon name="profile" /><span>{user?.fullName}</span></span>
         </div>
-      </header>
-      <main className="mx-auto max-w-6xl px-6 py-8">
         <Outlet />
       </main>
     </div>
   )
 }
+
+export function AppLayout() { return <Layout /> }
+export function AdminLayout() { return <Layout admin /> }
