@@ -166,6 +166,9 @@ La API solo acepta los orígenes de `Cors:AllowedOrigins`
 (`http://localhost:5173`, `:5199`, `:8080` por default; en producción se
 fijan con `Cors__AllowedOrigins__0`, ...). Si el navegador bloquea el login
 con error de CORS, verifica que el origen del frontend esté en esa lista.
+
+Entregas con archivo: ver `docs/almacenamiento.md` (bucket Supabase,
+mapeo de variables y verificación ticket → PUT → confirmación).
 ## 5. Troubleshooting (errores ya vistos en este proyecto)
 
 | Error | Causa | Fix |

@@ -39,7 +39,8 @@ public static class InfrastructureServiceRegistration
         services.AddSingleton<IPasswordHasher, AspNetPasswordHasher>();
         services.AddSingleton<IUserTokenService, JwtTokenService>();
         services.AddSingleton<IQrCodeGenerator, QrCodeGenerator>();
-        services.AddSingleton<IFileStorage, UnconfiguredFileStorage>();
+        services.Configure<StorageOptions>(configuration.GetSection(StorageOptions.SectionName));
+        RegisterFileStorage(services, configuration);
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         services.Configure<QrOptions>(configuration.GetSection(QrOptions.SectionName));
         services.Configure<ReportOptions>(configuration.GetSection(ReportOptions.SectionName));
@@ -72,6 +73,24 @@ public static class InfrastructureServiceRegistration
             });
 
         return services;
+    }
+
+    private static void RegisterFileStorage(IServiceCollection services, IConfiguration configuration)
+    {
+        var storage = configuration.GetSection(StorageOptions.SectionName).Get<StorageOptions>() ?? new StorageOptions();
+        if (string.IsNullOrWhiteSpace(storage.Endpoint) || string.IsNullOrWhiteSpace(storage.SecretKey))
+        {
+            services.AddSingleton<IFileStorage, UnconfiguredFileStorage>();
+            return;
+        }
+
+        services.AddHttpClient<SupabaseStorageClient>(client =>
+        {
+            client.BaseAddress = new Uri(storage.Endpoint.TrimEnd('/') + "/");
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
+        services.AddTransient<IFileStorage>(sp =>
+            sp.GetRequiredService<SupabaseStorageClient>());
     }
 
     public static IApplicationBuilder MapAppHealthChecks(this IApplicationBuilder app)
