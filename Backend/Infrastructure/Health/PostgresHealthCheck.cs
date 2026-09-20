@@ -19,9 +19,13 @@ public sealed class PostgresHealthCheck : IHealthCheck
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
+        // Bound the whole check: a stalled network must answer Unhealthy fast,
+        // never hang the endpoint (Render kills instances on slow health checks).
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
         try
         {
-            var canConnect = await _db.Database.CanConnectAsync(cancellationToken);
+            var canConnect = await _db.Database.CanConnectAsync(linked.Token);
             if (!canConnect)
             {
                 return HealthCheckResult.Unhealthy("Postgres is unreachable.");

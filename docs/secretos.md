@@ -15,7 +15,9 @@ Reglas de oro (RNF-14):
 
 | .NET (`dotnet user-secrets set`) | `.env` / Render | Notas |
 |---|---|---|
-| `ConnectionStrings:DefaultConnection` | Compose: vía `POSTGRES_*` / Render: `ConnectionStrings__DefaultConnection` | Local: `Host=localhost;...`; migraciones Supabase: directa; runtime: session pooler. Ver §7 |
+| `ConnectionStrings:DefaultConnection` acepta formato `Clave=Valor`
+(`Host=...;Port=...;...`) o URI `postgresql://user:pass@host:port/db`
+(se normaliza al arrancar; error claro si no se entiende). | Compose: vía `POSTGRES_*` / Render: `ConnectionStrings__DefaultConnection` | Local: `Host=localhost;...`; migraciones Supabase: directa; runtime: session pooler. Ver §7 |
 | `Jwt:Secret` (≥32 chars) | `JWT_SECRET` / `Jwt__Secret` | Firma de tokens. Sin esto nada arranca |
 
 ```powershell
