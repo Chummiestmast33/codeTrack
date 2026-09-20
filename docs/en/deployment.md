@@ -151,6 +151,7 @@ from the verification block above (before its Remove-Variable command). Approval
 $studentId = '<pending-test-student-guid>'
 Invoke-RestMethod "$api/api/admin/users/$studentId/approve" -Headers $headers -Method Post | Select-Object id,approvalStatus
 $sessionId = '<test-session-guid>'
+Invoke-RestMethod "$api/api/admin/sessions/$sessionId/qr/regenerate" -Headers $headers -Method Post | Out-Null
 Invoke-WebRequest "$api/api/admin/sessions/$sessionId/qr/image" -Headers $headers -OutFile (Join-Path $env:TEMP 'attendance-qr.png')
 ```
 
