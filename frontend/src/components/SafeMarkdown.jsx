@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown'
  */
 export default function SafeMarkdown({ text }) {
   return (
-    <div className="prose-sm max-w-none text-slate-800">
+    <div className="markdown">
       <ReactMarkdown>{text ?? ''}</ReactMarkdown>
     </div>
   )

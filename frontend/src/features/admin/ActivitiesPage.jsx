@@ -1,3 +1,4 @@
+import FormField from '../../components/FormField.jsx'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
@@ -86,74 +87,74 @@ export default function ActivitiesPage() {
     }
   }
 
-  const input = 'w-full rounded-md border border-slate-300 px-3 py-2'
+  const input = 'field'
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold">{t('activities.title')}</h1>
+    <div className="workspace-grid">
+      <h1 className="page-title">{t('activities.title')}</h1>
 
       {error && (
-        <p role="alert" className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="mt-4 alert alert-danger">
           {error instanceof ApiError ? t(`errors.${error.status}`, { defaultValue: t('errors.500') }) : t('errors.500')}
         </p>
       )}
 
-      <form onSubmit={onCreate} className="mt-4 grid max-w-2xl gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <form onSubmit={onCreate} className="grid gap-4 card workspace-editor">
         <h2 className="font-bold">{t('activities.create')}</h2>
-        <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder={t('activities.activityTitle')} className={input} />
-        <select value={form.topicId} onChange={(e) => setForm({ ...form, topicId: e.target.value })} className={input}>
+        <FormField label={t('activities.activityTitle')}><input aria-label={t('activities.activityTitle')} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder={t('activities.activityTitle')} className={input} /></FormField>
+        <FormField label={t('activities.pickTopic')}><select aria-label={t('activities.pickTopic')} value={form.topicId} onChange={(e) => setForm({ ...form, topicId: e.target.value })} className={input}>
           <option value="">{t('activities.pickTopic')}</option>
           {topics.filter((x) => x.isActive).map((topic) => (
             <option key={topic.id} value={topic.id}>{topic.name}</option>
           ))}
-        </select>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <input type="datetime-local" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} className={input} />
-          <select value={form.submissionMode} onChange={(e) => setForm({ ...form, submissionMode: e.target.value })} className={input}>
+        </select></FormField>
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField label={t('activities.due')}><input aria-label={t('activities.due')} type="datetime-local" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} className={input} /></FormField>
+          <FormField label={t('activities.submissionMode')}><select aria-label={t('activities.submissionMode')} value={form.submissionMode} onChange={(e) => setForm({ ...form, submissionMode: e.target.value })} className={input}>
             {MODES.map((m) => (
               <option key={m} value={m}>{t(`activities.modes.${m}`)}</option>
             ))}
-          </select>
+          </select></FormField>
         </div>
-        <textarea value={form.markdownContent} onChange={(e) => setForm({ ...form, markdownContent: e.target.value })} rows={4} placeholder={t('activities.markdownHint')} className={`${input} font-mono`} />
-        <button disabled={busy} className="w-fit rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50">
+        <FormField label={t('activities.markdownHint')}><textarea aria-label={t('activities.markdownHint')} value={form.markdownContent} onChange={(e) => setForm({ ...form, markdownContent: e.target.value })} rows={4} placeholder={t('activities.markdownHint')} className={`${input} font-mono`} /></FormField>
+        <button disabled={busy} className="w-fit btn btn-primary">
           {t('common.save')}
         </button>
       </form>
 
       {loading ? (
-        <p className="mt-6 text-slate-600">{t('common.loading')}</p>
+        <p role="status" className="state-message">{t('common.loading')}</p>
       ) : activities.length === 0 ? (
-        <p className="mt-6 text-slate-600">{t('activities.empty')}</p>
+        <p role="status" className="state-message">{t('activities.empty')}</p>
       ) : (
-        <div className="mt-4 overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+        <div tabIndex={0} role="region" aria-label={t('common.tableRegion')} className="table-panel">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-500">
+            <thead className="bg-canvas text-muted">
               <tr>
-                <th className="px-4 py-2">{t('activities.activityTitle')}</th>
-                <th className="px-4 py-2">{t('activities.topic')}</th>
-                <th className="px-4 py-2">{t('activities.status')}</th>
-                <th className="px-4 py-2">{t('admin.users.actions')}</th>
+                <th>{t('activities.activityTitle')}</th>
+                <th>{t('activities.topic')}</th>
+                <th>{t('activities.status')}</th>
+                <th>{t('admin.users.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {activities.map((a) => (
-                <tr key={a.id} className="border-t border-slate-100">
-                  <td className="px-4 py-2">
-                    <Link to={`/admin/activities/${a.id}/submissions`} className="font-medium text-indigo-600 underline">{a.title}</Link>
-                    <span className="ml-2 text-xs text-slate-400">{t(`activities.modes.${a.submissionMode}`)}</span>
+                <tr key={a.id} className="border-t border-line">
+                  <td>
+                    <Link to={`/admin/activities/${a.id}/submissions`} className="font-medium text-accent underline">{a.title}</Link>
+                    <span className="ml-2 text-sm text-muted">{t(`activities.modes.${a.submissionMode}`)}</span>
                   </td>
-                  <td className="px-4 py-2">{a.topicName}</td>
-                  <td className="px-4 py-2">{t(`activities.statuses.${a.status}`, { defaultValue: a.status })}</td>
-                  <td className="px-4 py-2">
-                    <div className="flex gap-1.5">
+                  <td>{a.topicName}</td>
+                  <td>{t(`activities.statuses.${a.status}`, { defaultValue: a.status })}</td>
+                  <td>
+                    <div className="flex flex-wrap gap-2">
                       {a.status === 'Draft' && (
-                        <button disabled={busy} onClick={() => run(a.id, publishActivity)} className="rounded-md border border-green-300 px-2 py-1 text-xs text-green-700 hover:bg-green-50">
+                        <button disabled={busy} onClick={() => run(a.id, publishActivity)} className="btn btn-success">
                           {t('activities.publish')}
                         </button>
                       )}
                       {a.status !== 'Closed' && (
-                        <button disabled={busy} onClick={() => run(a.id, closeActivity)} className="rounded-md border border-red-300 px-2 py-1 text-xs text-red-700 hover:bg-red-50">
+                        <button disabled={busy} onClick={() => run(a.id, closeActivity)} className="btn btn-danger">
                           {t('activities.close')}
                         </button>
                       )}

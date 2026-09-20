@@ -1,3 +1,4 @@
+import FormField from '../../components/FormField.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
@@ -98,11 +99,11 @@ export default function ActivityDetailPage() {
     return t(`errors.${error.status}`, { defaultValue: t('errors.500') })
   }
 
-  const input = 'w-full rounded-md border border-slate-300 px-3 py-2'
-  if (loading) return <p className="text-slate-600">{t('common.loading')}</p>
+  const input = 'field'
+  if (loading) return <p role="status" className="state-message">{t('common.loading')}</p>
   if (error && !activity) {
     return (
-      <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+      <p role="alert" className="alert alert-danger">
         {errorMessage()}
       </p>
     )
@@ -114,65 +115,65 @@ export default function ActivityDetailPage() {
   const current = history.length > 0 ? history[history.length - 1] : null
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">{activity.title}</h1>
-        <p className="text-sm text-slate-500">
+        <h1 className="page-title">{activity.title}</h1>
+        <p className="text-sm text-muted">
           {activity.topicName}
           {activity.dueDate ? ` · ${t('activities.due')}: ${formatDate(activity.dueDate, lang)}` : ''}
           {' · '}{t(`activities.modes.${activity.submissionMode}`)}
         </p>
       </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="card">
         <SafeMarkdown text={activity.markdownContent} />
       </section>
 
       {error && (
-        <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="alert alert-danger">
           {errorMessage()}
         </p>
       )}
       {notice && (
-        <p role="status" className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-800">
+        <p role="status" className="alert alert-success">
           {notice}
         </p>
       )}
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="card">
         <h2 className="font-bold">{t('submissions.deliver')}</h2>
-        <form onSubmit={onSubmit} className="mt-3 grid max-w-xl gap-3">
+        <form onSubmit={onSubmit} className="mt-6 grid max-w-xl gap-4">
           {(needsUrl || activity.submissionMode === 'UrlOrFile') && (
-            <input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://…" className={input} />
+            <FormField label={t('submissions.url')}><input aria-label={t('submissions.url')} value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://…" className={input} /></FormField>
           )}
           {allowsFile && (
-            <input type="file" onChange={(e) => setForm({ ...form, file: e.target.files?.[0] ?? null })} className={input} />
+            <FormField label={t('submissions.file')}><input aria-label={t('submissions.file')} type="file" onChange={(e) => setForm({ ...form, file: e.target.files?.[0] ?? null })} className={input} /></FormField>
           )}
-          <input value={form.comment} onChange={(e) => setForm({ ...form, comment: e.target.value })} placeholder={t('submissions.commentPlaceholder')} className={input} />
-          <button disabled={busy} className="w-fit rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50">
+          <FormField label={t('submissions.commentPlaceholder')}><input aria-label={t('submissions.commentPlaceholder')} value={form.comment} onChange={(e) => setForm({ ...form, comment: e.target.value })} placeholder={t('submissions.commentPlaceholder')} className={input} /></FormField>
+          <button disabled={busy} className="w-fit btn btn-primary">
             {busy ? t('common.loading') : t('submissions.deliver')}
           </button>
         </form>
-        <p className="mt-2 text-xs text-slate-500">{t('submissions.deliveryHint')}</p>
+        <p className="mt-2 text-sm text-muted">{t('submissions.deliveryHint')}</p>
       </section>
 
       <section>
         <h2 className="font-bold">{t('submissions.history', { count: history.length })}</h2>
         {history.length === 0 ? (
-          <p className="mt-2 text-slate-600">{t('submissions.noHistory')}</p>
+          <p role="status" className="state-message">{t('submissions.noHistory')}</p>
         ) : (
-          <div className="mt-3 space-y-3">
+          <div className="mt-6 space-y-6">
             {current && (
-              <article className="rounded-lg border-2 border-indigo-200 bg-white p-4 text-sm shadow-sm">
+              <article className="card card-accent text-sm">
                 <p className="font-bold">{t('submissions.current')} · v{current.versionNumber} · {t(`submissions.statuses.${current.status}`)}{current.isLate ? ` · ${t('submissions.late')}` : ''}</p>
-                {current.url && <a href={current.url} target="_blank" rel="noreferrer" className="break-all text-indigo-600 underline">{current.url}</a>}
-                {current.fileName && <p className="text-slate-600">{current.fileName}</p>}
-                {current.instructorComment && <p className="mt-1 text-slate-700">{t('submissions.instructorComment')}: {current.instructorComment}</p>}
-                <p className="mt-1 text-xs text-slate-400">{formatDateTime(current.submittedAt, lang)}</p>
+                {current.url && <a href={current.url} target="_blank" rel="noreferrer" className="break-all text-accent underline">{current.url}</a>}
+                {current.fileName && <p className="text-muted">{current.fileName}</p>}
+                {current.instructorComment && <p className="mt-1 text-ink">{t('submissions.instructorComment')}: {current.instructorComment}</p>}
+                <p className="mt-1 text-sm text-muted">{formatDateTime(current.submittedAt, lang)}</p>
               </article>
             )}
             {history.slice(0, -1).reverse().map((h) => (
-              <article key={h.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+              <article key={h.id} className="card text-sm text-muted">
                 v{h.versionNumber} · {t(`submissions.statuses.${h.status}`)} · {formatDateTime(h.submittedAt, lang)}
               </article>
             ))}

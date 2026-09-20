@@ -15,14 +15,19 @@
     "sessions": "Sesiones",
     "activities": "Actividades",
     "progress": "Progreso",
-    "reports": "Reportes"
+    "reports": "Reportes",
+    "main": "Navegación principal",
+    "openMenu": "Menú",
+    "closeMenu": "Cerrar menú",
+    "skipContent": "Saltar al contenido"
   },
   "common": {
     "save": "Guardar",
     "cancel": "Cancelar",
     "loading": "Cargando…",
     "retry": "Reintentar",
-    "back": "Volver"
+    "back": "Volver",
+    "tableRegion": "Tabla de datos; desplázate horizontalmente para ver todas las columnas"
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -164,7 +169,8 @@
       "Draft": "Borrador",
       "Published": "Publicada",
       "Closed": "Cerrada"
-    }
+    },
+    "submissionMode": "Tipo de entrega"
   },
   "submissions": {
     "title": "Entregas ({{count}})",
@@ -186,7 +192,10 @@
       "Submitted": "Entregado",
       "Reviewed": "Revisado",
       "Incomplete": "Incompleto"
-    }
+    },
+    "file": "Archivo",
+    "url": "Enlace de entrega",
+    "statusLabel": "Estado de entrega"
   },
   "progress": {
     "title": "Progreso por alumno",
@@ -211,12 +220,41 @@
     "progress": "Tabla de progreso",
     "download": "Descargar {{format}}"
   },
-  "errors": {    "400": "Revisa los datos enviados.",
+  "errors": {
+    "400": "Revisa los datos enviados.",
     "401": "No tienes sesión iniciada.",
     "403": "No tienes acceso.",
     "404": "No se encontró el recurso.",
     "409": "El dato ya está registrado.",
     "500": "Ocurrió un error inesperado.",
     "network": "No se pudo conectar con el servidor."
+  },
+  "visual": {
+    "workshop": "Programación competitiva",
+    "headline": "Grandes ideas. ",
+    "headlineAccent": "Mejor código.",
+    "introduction": "Un espacio para aprender, resolver retos y descubrir hasta dónde puedes llegar.",
+    "learn": "Aprende",
+    "solve": "Resuelve",
+    "advance": "Avanza",
+    "loginEyebrow": "Tu próximo reto te espera",
+    "registerEyebrow": "Empieza tu recorrido",
+    "loginDescription": "Entra a tu espacio y continúa aprendiendo.",
+    "registerDescription": "Crea tu cuenta para unirte al taller. Un administrador revisará tu solicitud.",
+    "pauseMotion": "Pausar animaciones de fondo",
+    "adminSpace": "Espacio de administración",
+    "studentSpace": "Tu espacio de aprendizaje",
+    "dashboardTitle": "Un reto a la vez.",
+    "dashboardAccent": "Un paso más lejos.",
+    "dashboardDescription": "Todo lo que necesitas para seguir aprendiendo, en un mismo lugar.",
+    "explore": "Continúa tu recorrido",
+    "sessionsDescription": "Consulta las próximas sesiones y registra tu asistencia.",
+    "activitiesDescription": "Encuentra tu siguiente actividad y comparte tu solución.",
+    "progressDescription": "Descubre lo que has avanzado en cada tema.",
+    "open": "Explorar",
+    "profileEyebrow": "Tu identidad en el taller",
+    "profileDescription": "Estos son los datos asociados a tu cuenta.",
+    "sessionHint": "Tu próxima oportunidad para aprender.",
+    "pendingEyebrow": "Todo listo de tu lado"
   }
 }

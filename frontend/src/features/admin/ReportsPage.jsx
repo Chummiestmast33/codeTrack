@@ -34,26 +34,26 @@ export default function ReportsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">{t('reports.title')}</h1>
-      <p className="mt-1 text-sm text-slate-600">{t('reports.description')}</p>
+      <h1 className="page-title">{t('reports.title')}</h1>
+      <p className="mt-1 text-sm text-muted">{t('reports.description')}</p>
 
       {error && (
-        <p role="alert" className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="mt-4 alert alert-danger">
           {error}
         </p>
       )}
 
-      <div className="mt-4 grid max-w-2xl gap-4">
+      <div className="mt-6 grid max-w-2xl gap-4">
         {TARGETS.map(({ kind, formats }) => (
-          <section key={kind} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <section key={kind} className="card">
             <h2 className="font-bold">{t(`reports.${kind}`)}</h2>
-            <div className="mt-3 flex gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               {formats.map((format) => (
                 <button
                   key={format}
                   disabled={busy !== null}
                   onClick={() => download(kind, format)}
-                  className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
+                  className="btn btn-primary"
                 >
                   {busy === `${kind}-${format}` ? t('common.loading') : t('reports.download', { format: format.toUpperCase() })}
                 </button>
