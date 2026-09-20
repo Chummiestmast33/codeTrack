@@ -3,9 +3,13 @@ using Backend.Application.Abstractions;
 using Backend.Infrastructure.Persistence;
 using Backend.Infrastructure.Persistence.Repositories;
 using Backend.Infrastructure.Qr;
+using Backend.Infrastructure.Health;
 using Backend.Infrastructure.Reporting;
 using Backend.Infrastructure.Security;
 using Backend.Infrastructure.Storage;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +43,11 @@ public static class InfrastructureServiceRegistration
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         services.Configure<QrOptions>(configuration.GetSection(QrOptions.SectionName));
         services.Configure<ReportOptions>(configuration.GetSection(ReportOptions.SectionName));
+        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.SectionName));
+        services.AddHttpContextAccessor();
+        services.AddScoped<IUserContext, HttpUserContext>();
+        services.AddHealthChecks().AddCheck<PostgresHealthCheck>("postgres");
+        services.AddHostedService<AdminSeedHostedService>();
 
         var jwt = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
         if (jwt.Secret.Length < 32)
@@ -63,5 +72,27 @@ public static class InfrastructureServiceRegistration
             });
 
         return services;
+    }
+
+    public static IApplicationBuilder MapAppHealthChecks(this IApplicationBuilder app)
+    {
+        app.UseHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = async (context, report) =>
+            {
+                context.Response.ContentType = "application/json";
+                var postgres = report.Entries.TryGetValue("postgres", out var entry)
+                    ? entry.Data.TryGetValue("appliedMigrations", out var count) ? count?.ToString() : null
+                    : null;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    status = report.Status.ToString(),
+                    postgres = postgres is null ? "unknown" : "up",
+                    appliedMigrations = postgres ?? "0"
+                });
+            }
+        });
+
+        return app;
     }
 }

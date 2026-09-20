@@ -1,3 +1,4 @@
+using Backend.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -22,6 +23,6 @@ public sealed class TallerDbContextFactory : IDesignTimeDbContextFactory<TallerD
             .UseNpgsql(connectionString)
             .Options;
 
-        return new TallerDbContext(options);
+        return new TallerDbContext(options, SystemUserContext.Instance);
     }
 }

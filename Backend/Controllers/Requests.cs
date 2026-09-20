@@ -15,3 +15,6 @@ public sealed record LoginRequest(
 
 public sealed record ResetPasswordRequest(
     [Required][MinLength(8)] string NewPassword);
+
+public sealed record RenameUserRequest(
+    [Required][MaxLength(200)] string FullName);

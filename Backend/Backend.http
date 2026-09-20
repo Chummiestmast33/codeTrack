@@ -1,5 +1,11 @@
 @Backend_HostAddress = http://localhost:5245
 
+### Health (no auth)
+GET {{Backend_HostAddress}}/health
+Accept: application/json
+
+###
+
 ### Register (201 created, 409 on duplicate control number)
 POST {{Backend_HostAddress}}/api/auth/register
 Content-Type: application/json

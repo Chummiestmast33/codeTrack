@@ -36,6 +36,7 @@ var app = builder.Build();
 
 app.UseGlobalExceptionHandling();
 app.UseCors(CorsOptions.PolicyName);
+app.MapAppHealthChecks();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

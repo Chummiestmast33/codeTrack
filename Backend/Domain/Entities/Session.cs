@@ -13,8 +13,6 @@ public sealed class Session : AuditableEntity
 
     public SessionStatus Status { get; private set; } = SessionStatus.Planned;
 
-    public Guid CreatedBy { get; private set; }
-
     private Session()
     {
     }

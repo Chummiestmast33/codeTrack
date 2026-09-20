@@ -35,8 +35,18 @@ services:
       Reports__Period: ${REPORT_PERIOD:-}
       Reports__Responsible: ${REPORT_RESPONSIBLE:-}
       Reports__Advisor: ${REPORT_ADVISOR:-}
+      Admin__ControlNumber: ${ADMIN_CONTROL_NUMBER:-}
+      Admin__FullName: ${ADMIN_FULL_NAME:-}
+      Admin__Email: ${ADMIN_EMAIL:-}
+      Admin__Password: ${ADMIN_PASSWORD:-}
     ports:
       - "${API_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/health | grep -q '\"status\":\"Healthy\"' || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 45s
 
 volumes:
   pgdata:

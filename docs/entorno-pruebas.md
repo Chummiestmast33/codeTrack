@@ -100,6 +100,16 @@ Notas:
 - Alternativa contenerizada: `docker compose up api` (puerto `8080`;
   ciclo de cambios más lento que `dotnet run`).
 
+### 3.1. Cuenta admin inicial y salud
+
+- Si configuras la sección `Admin` (UserSecrets `Admin:*` o `ADMIN_*` en
+  `.env`), al arrancar se crea el administrador una sola vez si no existe
+  (idempotente; nunca loguea secretos). Sin config, el arranque avisa y sigue.
+- Verifica `GET /health` → `200 {"status":"Healthy",...}` con Postgres
+  arriba; `503` con la base caída. Compose lo usa como healthcheck del api.
+- Auditoría RF-24: `CreatedAt/UpdatedAt` (UTC) más `CreatedBy/UpdatedBy`
+  (actor del JWT, nulo en seed/sistema). Migración `AuditActors`.
+
 ## 4. Probar la API con Scalar
 
 Abre `http://localhost:5245/scalar/v1` (solo existe en `Development`).
@@ -182,7 +192,6 @@ migraciones; el pooler (6543) puede usarse en runtime. Los secretos de
 producción van en el proveedor de hosting, nunca en el repo ni en `.env`.
 
 ### Encabezado oficial de reportes (RN-08)
-
 Proyecto, periodo, responsable y asesor son configuración, no código:
 
 ```powershell

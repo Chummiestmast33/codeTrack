@@ -6,6 +6,7 @@ using Backend.Application.Features.Topics;
 using Backend.Application.Features.Activities;
 using Backend.Application.Features.Submissions;
 using Backend.Application.Features.Progress;
+using Backend.Application.Features.Users;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,7 @@ public static class DependencyInjection
         services.AddTransient<IValidator<SubmitActivityCommand>, SubmitActivityValidator>();
         services.AddTransient<IValidator<ReviewSubmissionCommand>, ReviewSubmissionValidator>();
         services.AddTransient<IValidator<AdjustProgressCommand>, AdjustProgressValidator>();
+        services.AddTransient<IValidator<RenameUserCommand>, RenameUserValidator>();
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddScoped<SessionManager>();
         services.AddScoped<AttendanceEnricher>();
