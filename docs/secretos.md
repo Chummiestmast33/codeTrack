@@ -90,7 +90,7 @@ Detalle completo (bucket privado, rotación, verificación): `docs/almacenamient
 | `Auth:AllowedEmailDomain` | vacío (sin exigir, D-02 pendiente) | `.env`: `ALLOWED_EMAIL_DOMAIN` |
 | `Qr:ExpiryMinutes` / `Qr:ImageSizePixels` | `120` / `512` | |
 | `Qr:FrontendBaseUrl` | `http://localhost:5173` | **Cambiar en prod** a la URL de Vercel o los QR apuntan a local |
-| `Cors:AllowedOrigins` | 3 localhost en `appsettings.json` | **Cambiar en prod**: `Cors__AllowedOrigins__0=https://tu-app.vercel.app` |
+| `Cors:AllowedOrigins` | 3 localhost en `appsettings.json` | **Cambiar en prod**: `Cors__AllowedOrigins__0=https://code-track-two.vercel.app` |
 | `VITE_API_URL` (frontend) | `http://localhost:5245` | **URL pública del backend en Vercel** (se incrusta al compilar) |
 | `VITE_PERIOD` (frontend) | vacío (oculto) | Periodo visible junto al nombre |
 

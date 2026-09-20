@@ -27,7 +27,9 @@ RUN dotnet publish "./Backend.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p
 FROM base AS final
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
-USER $APP_UID
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Backend.dll"]
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+USER $APP_UID
+ENTRYPOINT ["./entrypoint.sh"]

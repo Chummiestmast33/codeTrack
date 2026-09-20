@@ -46,6 +46,11 @@ services:
       Storage__SecretKey: ${S3_SECRET_ACCESS_KEY:-}
       Storage__UploadUrlExpiryMinutes: ${STORAGE_UPLOAD_EXPIRY_MINUTES:-15}
       Storage__DownloadUrlExpiryMinutes: ${STORAGE_DOWNLOAD_EXPIRY_MINUTES:-60}
+      Qr__FrontendBaseUrl: ${QR_FRONTEND_BASE_URL:-http://localhost:5173}
+      Qr__ExpiryMinutes: ${QR_EXPIRY_MINUTES:-120}
+      Cors__AllowedOrigins__0: ${CORS_ALLOWED_ORIGIN_0:-http://localhost:5173}
+      Cors__AllowedOrigins__1: ${CORS_ALLOWED_ORIGIN_1:-http://localhost:5199}
+      Cors__AllowedOrigins__2: ${CORS_ALLOWED_ORIGIN_2:-http://localhost:8080}
     ports:
       - "${API_PORT:-8080}:8080"
     healthcheck:

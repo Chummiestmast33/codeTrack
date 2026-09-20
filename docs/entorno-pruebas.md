@@ -199,7 +199,8 @@ No usar el modo transacción (`:6543`): es para serverless y rompe
 prepared statements. Percent-encodea el password si trae `&`, `#`, `?`
 o espacios (solo en formato URI `postgresql://`; en formato `Clave=...`
 va tal cual). Los secretos de producción van en el proveedor de hosting,
-nunca en el repo ni en `.env`.
+nunca en el repo ni en `.env`. Guía completa de deploy:
+[`docs/despliegue.md`](despliegue.md).
 
 ### 7.1. Conexión remota paso a paso
 
