@@ -1,18 +1,18 @@
-# Secretos y configuración
+# Secrets and configuration
 
-[English](en/secrets.md) - [Entorno](entorno-pruebas.md) - [Despliegue](despliegue.md) - [Storage](almacenamiento.md)
+[Español](../secretos.md) - [Environment](environment.md) - [Deployment](deployment.md) - [Storage](storage.md)
 
-Ejecuta en PowerShell 7 desde la raíz. Sustituye cada `<...>`/`xxxx` antes de usarlo.
-Los dominios y nombres de ejemplo son ficticios. No versionar secretos, pegarlos en PRs ni imprimir
-valores de configuración. `VITE_*` es público y se incorpora al compilar el frontend.
+Run commands in PowerShell 7 from the repository root. Replace every `<...>`/`xxxx` placeholder
+before use. Example domains and names are fictional. Do not commit secrets, paste them in PRs,
+or print configuration values. `VITE_*` values are public and embedded during frontend compilation.
 
-## Mapa de configuración
+## Configuration map
 
-UserSecrets aplica al host Development; Compose consume `.env` de la raíz; Render usa nombres
-jerárquicos. El guion indica que Compose no tiene mapeo explícito para esa opción.
-Compose construye ConnectionStrings con `POSTGRES_*`; la entrada vacía
-`ConnectionStrings__DefaultConnection` de la plantilla no se consume en Compose.
-Los defaults proceden de options/appsettings/Compose; los placeholders son datos por despliegue.
+UserSecrets apply to the Development host; Compose consumes root `.env`; Render uses hierarchical
+environment names. A dash means Compose has no explicit mapping for that option.
+ConnectionStrings in Compose is constructed from `POSTGRES_*`; the blank
+`ConnectionStrings__DefaultConnection` entry in the template is not consumed by Compose.
+Defaults below come from options/appsettings/Compose; placeholders are deployment-specific inputs.
 
 | .NET / UserSecrets | Render / environment | Compose .env | Example / default |
 |---|---|---|---|
@@ -44,12 +44,11 @@ Los defaults proceden de options/appsettings/Compose; los placeholders son datos
 | `Cors:AllowedOrigins:2` | `Cors__AllowedOrigins__2` | `CORS_ALLOWED_ORIGIN_2` | `http://localhost:8080` |
 | `Auth:AllowedEmailDomain` | `Auth__AllowedEmailDomain` | `ALLOWED_EMAIL_DOMAIN` | `(empty)` |
 
+## Set development values
 
-## Configurar desarrollo
-
-Genera JWT y configura la base local con [entorno](entorno-pruebas.md#configuración-local).
-Este bloque cubre las demás opciones. Sustituye placeholders de admin/storage/reportes.
-Mantén vacío el dominio D-02 hasta aprobarlo. Omite storage si pruebas solo entregas URL.
+Generate JWT and configure the local database using [environment](environment.md#local-configuration).
+The following covers every other mapped option. Replace admin/storage/report placeholders.
+Keep D-02's domain empty until approved. Omit storage settings entirely if testing URL-only submissions.
 
 ```powershell
 dotnet user-secrets set 'Jwt:Issuer' 'codetrack' --project Backend
@@ -79,26 +78,25 @@ dotnet user-secrets set 'Cors:AllowedOrigins:2' 'http://localhost:8080' --projec
 dotnet user-secrets set 'Auth:AllowedEmailDomain' '' --project Backend
 ```
 
+The admin seed is implemented and idempotent by control number: it skips an existing account,
+does not reset its password, and logs a failure while allowing startup to continue.
+Set all four admin fields and choose a strong password. The seed does not run the student
+registration validator; do not claim an enforced seed password-length rule.
+Reports require all four header fields (`reports.not-configured` otherwise).
+Missing storage configuration allows startup but upload tickets fail.
 
-El seed admin está implementado y es idempotente por número de control: omite cuentas existentes,
-no cambia su contraseña y registra fallos permitiendo continuar el arranque.
-Configura los cuatro campos y elige una contraseña fuerte. El seed no ejecuta el validador de
-registro de alumnos; no se debe atribuir al seed un mínimo de longitud validado.
-Reportes exige los cuatro encabezados (en su ausencia, `reports.not-configured`).
-Sin storage configurado la API arranca, pero falla la solicitud de tickets.
+## Compose and production values
 
-## Valores Compose y producción
-
-Editar valores locales de Compose sin imprimir secretos (conserva valores existentes):
+To edit local Compose values without printing secrets (preserve existing values):
 
 ```powershell
 if (!(Test-Path .env)) { Copy-Item .env.example .env }
 notepad .env
 ```
 
-Usa la columna Compose para admin, reportes, storage, QR y CORS; configura JWT/base con la guía
-de entorno. `API_PORT` es un puerto numérico del host, normalmente `8080`.
-Ejemplo de variables de proceso (Render requiere las mismas claves en su panel):
+Use the Compose column for admin, reports, storage, QR and CORS; use the local environment
+guide to set JWT/database values. `API_PORT` is a numeric host port, normally `8080`.
+For a process environment example (Render requires the same keys in its dashboard):
 
 ```powershell
 $env:Reports__ProjectName = '<workshop-name>'
@@ -107,21 +105,21 @@ $env:Cors__AllowedOrigins__0 = 'https://<your-app>.vercel.app'
 $env:Qr__FrontendBaseUrl = 'https://<your-app>.vercel.app'
 ```
 
-La guía de despliegue incluye un bloque completo para Render. Los comandos `$env:` locales
-no actualizan el servicio remoto. Configuración frontend, desde la raíz:
+The deployment guide includes a complete Render key/value block. Local `$env:` commands do
+not update a hosted service. Frontend configuration, from the root:
 
 ```powershell
 if (!(Test-Path frontend/.env)) { Copy-Item frontend/.env.example frontend/.env }
 notepad frontend/.env
 ```
 
-Configura `VITE_API_URL=https://<your-api>.onrender.com` y `VITE_PERIOD=<period>` opcional.
-Reinicia Vite o redespliega Vercel. Configurarlas en Render no configura Vercel.
+Set `VITE_API_URL=https://<your-api>.onrender.com` and optional `VITE_PERIOD=<period>`.
+Restart local Vite or redeploy Vercel. Setting these on Render does not configure Vercel.
 
-## Verificar nombres y rotar
+## Verify names and rotate
 
-El primer comando filtra UserSecrets a nombres; no lo ejecutes sin filtro para diagnosticar.
-El segundo no debe imprimir nada; el tercero debe imprimir ambas rutas ignoradas.
+The first command filters UserSecrets output to names; never run it unfiltered for diagnostics.
+The second should print nothing; the third should print both ignored paths.
 
 ```powershell
 dotnet user-secrets list --project Backend | ForEach-Object { ($_ -split ' = ', 2)[0] }
@@ -130,10 +128,9 @@ git check-ignore .env frontend/.env
 docker compose config --quiet
 ```
 
-
-Si se filtra un secreto real, revócalo/rótalo en su proveedor antes del push. Actualiza UserSecrets
-con el mismo `dotnet user-secrets set` de la clave, actualiza `.env`/Render, reinicia y verifica
-salud/login/storage. Rotar JWT invalida tokens existentes. Cambiar el seed admin no restablece
-una contraseña existente: usa el flujo administrativo de restablecimiento.
-La creación/revocación de credenciales se hace en el panel autenticado del proveedor;
-no existe un comando local genérico que rote credenciales remotas.
+If a real secret leaks, revoke/rotate it in the owning provider before pushing. Update
+UserSecrets with the same `dotnet user-secrets set` command for that key, update private
+`.env`/Render values, restart the service and run health/login/storage verification.
+JWT rotation invalidates existing tokens. Admin seed values do not reset an existing password;
+use the administrator password reset flow. Provider credential creation/revocation happens
+in its authenticated dashboard; do not invent a local command that rotates remote credentials.

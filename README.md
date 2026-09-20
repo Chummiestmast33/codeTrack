@@ -1,32 +1,80 @@
-# Introducción a la Programación Competitiva
+# CodeTrack - Introduction to Competitive Programming
 
-![CI](https://github.com/Chummiestmast33/codeTrack/actions/workflows/ci.yml/badge.svg)
+CodeTrack manages student approval, topics, sessions, manual and QR attendance,
+versioned submissions, topic progress, and PDF/CSV reports for a programming workshop.
 
-## Carpetas del proyecto
+## Stack and structure
 
-- `Backend/`: proyecto único ASP.NET Core con `Controllers/`, `Domain/` (entidades, enums y reglas puras), `Application/` (casos de uso Identity con MediatR + FluentValidation), `Infrastructure/` (EF Core + PostgreSQL, hashing, JWT), `Middleware/` (errores RFC 7807) y `OpenApi/` (documento + esquema Bearer).
-- `Backend.Tests/`: proyecto de pruebas xUnit que referencia a `Backend/`; cubre casos de riesgo del dominio, aplicación e infraestructura.
-- `frontend/`: React 19 + Vite 8 + Tailwind CSS v4 (`npm run dev` / `npm run build` desde `frontend/`). Fuente en `src/` (`api/`, `components/`, `features/`, `pages/`, `routes/`, `styles/`, `types/`).
-- `docs/`: requisitos, reglas de negocio, decisiones, arquitectura y guía del entorno de pruebas.
-- `docker-compose.yml`: Postgres local para desarrollo; `.env.example` con las variables necesarias (nunca commitear `.env`).
+- ASP.NET Core 10 Controllers API, EF Core 10/Npgsql, PostgreSQL 17, MediatR and FluentValidation.
+- JWT, ASP.NET password hashing, QRCoder, QuestPDF and AWSSDK.S3 signed uploads.
+- React 19, Vite 8, Tailwind CSS 4, React Router and react-i18next. English UI currently falls back to Spanish for missing translations.
+- `Backend/`: one modular project with `Controllers/`, `Domain/`, `Application/`, `Infrastructure/`, `Middleware/`, `Api/` and `OpenApi/`. Migrations: `Infrastructure/Persistence/Migrations/`. There is no separate backend `src/` project layout.
+- `Backend.Tests/`: xUnit tests, included with the API in `Backend/Backend.slnx`.
+- `frontend/src/`: API clients, components, features, pages, routes, styles, locales and types.
+- `docker-compose.yml`: local PostgreSQL and optional API container; `Backend/Dockerfile`: API image.
+- `docs/`: Spanish specifications and guides; `docs/en/`: English operational mirrors.
 
-## Primeros pasos
+## Development quickstart
 
-1. Desarrollar primero el backend en `Backend/` (modelo, EF Core + PostgreSQL, autenticación, endpoints Controllers). La división en `src/Api, Application, Domain, Infrastructure` y los proyectos en `backend/tests/` se harán como evolución cuando haya casos de uso reales.
-2. Después inicializar React con Vite dentro de `frontend/` conservando las carpetas `src/` actuales. Si el generador crea un `src/` propio, integrar sus archivos en estas carpetas.
+Install .NET SDK 10, Node.js 24/npm, Docker Desktop with Linux containers, and PowerShell 7.
+Start at the repository root. Complete the [local configuration commands](docs/en/environment.md#local-configuration)
+first, then configure the initial admin using [secrets](docs/en/secrets.md). In the same terminal:
 
-## Desarrollo local y pruebas
+```powershell
+dotnet restore Backend/Backend.slnx
+dotnet tool install --global dotnet-ef --version '10.0.*'
+docker compose up -d db
+dotnet ef database update --project Backend --connection $env:ConnectionStrings__DefaultConnection
+$env:ASPNETCORE_ENVIRONMENT = 'Development'
+$env:ASPNETCORE_URLS = 'http://localhost:5245'
+dotnet run --project Backend --no-launch-profile
+```
 
-Guía completa en [`docs/entorno-pruebas.md`](docs/entorno-pruebas.md): levantar
-Postgres, aplicar migraciones, correr la API y probar los endpoints con
-Scalar (`/scalar/v1`, solo Development). Secretos locales con UserSecrets
-(`dotnet run`) y `.env` (solo Compose); ver la guía para el formato de nombres.
+If dotnet-ef is installed, use `dotnet tool update --global dotnet-ef --version '10.0.*'`.
+In another terminal at the repository root:
 
-En producción la base será Supabase: conexión directa (puerto 5432, `SSL Mode=Require`, usuario `postgres`) para migraciones; en runtime el shared pooler en modo sesión (`:5432`, usuario `postgres.<ref>`, host copiado del dashboard, soporta prepared statements — no usar el modo transacción `:6543`).
+```powershell
+Invoke-RestMethod 'http://localhost:5245/health'
+if (!(Test-Path frontend/.env)) { Copy-Item frontend/.env.example frontend/.env }
+Set-Location frontend
+npm ci
+npm run dev
+```
 
-## Orden de construcción
+Frontend: `http://localhost:5173`; development API explorer: `http://localhost:5245/scalar/v1`;
+OpenAPI: `http://localhost:5245/openapi/v1.json`. Students require approval before signing in.
 
-1. Backend primero (dominio, aplicación, infraestructura, endpoints).
-2. Frontend con React + Vite + Tailwind v4 ya inicializado en `frontend/`; desarrolla las pantallas sobre las carpetas `src/` existentes.
-3. Conecta el frontend con el backend y desarrolla primero usuarios, temas, sesiones y asistencia; continúa con actividades, progreso y reportes según [`docs/requisitos-funcionales.md`](docs/requisitos-funcionales.md).
-4. Antes de validar el número de control, consulta [`docs/reglas-negocio.md`](docs/reglas-negocio.md): RN-02 está cancelada. El número sigue siendo obligatorio y único.
+## Validation
+
+From the repository root, backend first:
+
+```powershell
+dotnet restore Backend/Backend.slnx
+dotnet build Backend/Backend.slnx --no-restore --nologo
+dotnet test Backend/Backend.slnx --no-build --nologo
+Push-Location frontend
+npm ci
+npm run lint
+npm run build
+Pop-Location
+```
+
+See the [CI workflow](.github/workflows/ci.yml).
+
+## Documentation
+
+| Topic | English | Español |
+|---|---|---|
+| Development | [Environment](docs/en/environment.md) | [Entorno](docs/entorno-pruebas.md) |
+| Production | [Deployment](docs/en/deployment.md) | [Despliegue](docs/despliegue.md) |
+| Configuration | [Secrets](docs/en/secrets.md) | [Secretos](docs/secretos.md) |
+| Files | [Storage](docs/en/storage.md) | [Almacenamiento](docs/almacenamiento.md) |
+
+Spanish remains normative: [RF](docs/requisitos-funcionales.md), [RN](docs/reglas-negocio.md),
+[D](docs/decisiones-pendientes.md), [RNF](docs/requisitos-no-funcionales.md).
+Also see [architecture](docs/arquitectura.md), [data](docs/arquitectura-y-datos.md),
+[UI style](docs/guia-estilos.md) and [open work](docs/pendientes.md).
+RN-02 remains canceled: control numbers are required and unique without a fixed institutional pattern.
+Domain instants use UTC (RN-09). English guides do not redefine specification identifiers.
+
+See the [sanitized secret audit and validation limits](docs/auditoria-secretos.md).
