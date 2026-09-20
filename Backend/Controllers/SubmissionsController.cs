@@ -48,6 +48,12 @@ public sealed class SubmissionsController : ControllerBase
     public async Task<ActionResult<IReadOnlyList<SubmissionDto>>> ByActivity(Guid activityId, CancellationToken cancellationToken) =>
         Ok(await _sender.Send(new GetSubmissionsByActivityQuery(activityId), cancellationToken));
 
+    [HttpGet("api/admin/submissions/{id:guid}/file")]
+    [Authorize(Roles = "Administrator")]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public async Task<ActionResult<SubmissionFileDto>> FileAccess(Guid id, CancellationToken cancellationToken) =>
+        Ok(await _sender.Send(new GetSubmissionFileQuery(id, CurrentUserId()), cancellationToken));
+
     [HttpPatch("api/admin/submissions/{id:guid}/status")]
     [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<SubmissionDto>> Review(Guid id, ReviewRequest request, CancellationToken cancellationToken) =>

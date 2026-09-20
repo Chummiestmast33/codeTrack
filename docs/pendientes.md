@@ -14,5 +14,5 @@ Estados basados en codigo; no implican verificación de despliegues privados.
 | Mutation testing | Pendiente; CI ejecuta xUnit, no mutation testing | Elegir alcance y umbral, ejecutar sobre reglas de riesgo y documentar supervivientes |
 | Seed admin por env | Implementado: `AdminSeedHostedService` crea una vez por control; configuración/verificación por entorno pendiente | Configurar cuatro campos, probar primer login y segundo arranque sin duplicados; comprobar error de seed |
 | Traducción UI `en.json` | Parcial; claves ausentes caen a español | Completar paridad de claves y revisar textos/interpolaciones visualmente |
-| Descarga de archivos | Adaptador S3 firma GET, pero no hay endpoint de descarga | Definir y proteger endpoint; verificar autorización y descarga E2E antes de anunciar la capacidad |
+| Descarga de archivos | Implementada para administradores: endpoint por versión, descarga y vista previa; tests de permisos | Verificar GET/CORS y vista previa contra el storage del despliegue; no requiere migraciones |
 | Storage E2E | Requiere proyecto y credenciales de prueba | Ejecutar ticket - PUT - confirmación y comprobación independiente S3, dejando claro qué flujo cubre |

@@ -20,7 +20,12 @@
   "submissions": {
     "file": "File",
     "url": "Submission link",
-    "statusLabel": "Submission status"
+    "statusLabel": "Submission status",
+    "downloadFile": "Download file",
+    "previewFile": "Preview",
+    "closePreview": "Close",
+    "fileAccessError": "The file could not be accessed. Try again; if it persists, check that the file is still available.",
+    "previewHint": "If your browser cannot display this format, download the file."
   },
   "visual": {
     "workshop": "Competitive programming",
