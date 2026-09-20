@@ -22,7 +22,7 @@ Postgres, aplicar migraciones, correr la API y probar los endpoints con
 Scalar (`/scalar/v1`, solo Development). Secretos locales con UserSecrets
 (`dotnet run`) y `.env` (solo Compose); ver la guía para el formato de nombres.
 
-En producción la base será Supabase: usa su conexión directa (puerto 5432, `SSL Mode=Require`) para migraciones; el pooler (6543) puede usarse en runtime.
+En producción la base será Supabase: conexión directa (puerto 5432, `SSL Mode=Require`, usuario `postgres`) para migraciones; en runtime el shared pooler en modo sesión (`:5432`, usuario `postgres.<ref>`, host copiado del dashboard, soporta prepared statements — no usar el modo transacción `:6543`).
 
 ## Orden de construcción
 

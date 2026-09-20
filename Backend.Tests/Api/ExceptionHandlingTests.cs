@@ -33,6 +33,8 @@ public sealed class ExceptionHandlingTests
     [InlineData(typeof(ForbiddenException), 403)]
     [InlineData(typeof(NotFoundException), 404)]
     [InlineData(typeof(ConflictException), 409)]
+    [InlineData(typeof(GoneException), 410)]
+    [InlineData(typeof(ArgumentException), 400)]
     [InlineData(typeof(InvalidOperationException), 500)]
     public async Task Maps_Exceptions_To_Status_Codes(Type errorType, int expectedStatus)
     {
@@ -42,6 +44,8 @@ public sealed class ExceptionHandlingTests
                 new FluentValidation.ValidationException(new[] { new ValidationFailure("Email", "bad") }),
             _ when errorType == typeof(NotFoundException) => new NotFoundException("User", "x"),
             _ when errorType == typeof(ConflictException) => new ConflictException("dup"),
+            _ when errorType == typeof(GoneException) => new GoneException("expired"),
+            _ when errorType == typeof(ArgumentException) => new ArgumentException("bad input"),
             _ when errorType == typeof(UnauthorizedException) => new UnauthorizedException(),
             _ when errorType == typeof(ForbiddenException) => new ForbiddenException("no"),
             _ => new InvalidOperationException("boom")
@@ -62,6 +66,18 @@ public sealed class ExceptionHandlingTests
         Assert.Equal(500, status);
         Assert.DoesNotContain("secret123", body);
         Assert.Contains("An unexpected error occurred.", body);
+    }
+
+    [Fact]
+    public async Task ReportsNotConfigured_Returns_Code_And_Safe_Detail()
+    {
+        var (status, contentType, body) = await RunAsync(
+            new ReportsNotConfiguredException("Report header is not configured (Reports section): ProjectName."));
+
+        Assert.Equal(500, status);
+        Assert.Equal("application/problem+json", contentType);
+        Assert.Contains("reports.not-configured", body);
+        Assert.Contains("Report header is not configured", body);
     }
 
     [Fact]

@@ -23,6 +23,9 @@ public sealed class Submission : AuditableEntity
 
     public string? Comment { get; private set; }
 
+    /// <summary>Instructor's observation on the review (RF-18).</summary>
+    public string? InstructorComment { get; private set; }
+
     public SubmissionStatus Status { get; private set; } = SubmissionStatus.Submitted;
 
     public int VersionNumber { get; private set; } = 1;
@@ -97,7 +100,7 @@ public sealed class Submission : AuditableEntity
     /// <summary>UTC comparison owned by the domain (RN-09, RF-15).</summary>
     public bool IsLate(DateTimeOffset? dueDate) => dueDate.HasValue && SubmittedAt > dueDate.Value;
 
-    public void Review(Guid reviewerId, SubmissionStatus reviewStatus, DateTimeOffset now)
+    public void Review(Guid reviewerId, SubmissionStatus reviewStatus, DateTimeOffset now, string? instructorComment = null)
     {
         if (reviewerId == Guid.Empty)
         {
@@ -112,6 +115,7 @@ public sealed class Submission : AuditableEntity
         Status = reviewStatus;
         ReviewedBy = reviewerId;
         ReviewedAt = now;
+        InstructorComment = instructorComment;
         Touch(now);
     }
 }

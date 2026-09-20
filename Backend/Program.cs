@@ -1,12 +1,9 @@
 using Backend.Api;
+using Backend.Application;
 using Backend.Application.Abstractions;
-using Backend.Application.Common;
-using Backend.Application.Features.Identity;
 using Backend.Infrastructure;
 using Backend.Middleware;
 using Backend.OpenApi;
-using FluentValidation;
-using MediatR;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,12 +27,8 @@ builder.Services.AddOpenApi("v1", options =>
 });
 
 builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection(AuthOptions.SectionName));
+builder.Services.AddApplication();
 builder.Services.AddFrontendCors(builder.Configuration);
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-builder.Services.AddTransient<IValidator<RegisterStudentCommand>, RegisterStudentValidator>();
-builder.Services.AddTransient<IValidator<LoginCommand>, LoginValidator>();
-builder.Services.AddTransient<IValidator<ResetPasswordCommand>, ResetPasswordValidator>();
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -43,6 +36,7 @@ var app = builder.Build();
 
 app.UseGlobalExceptionHandling();
 app.UseCors(CorsOptions.PolicyName);
+app.MapAppHealthChecks();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

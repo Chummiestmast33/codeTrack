@@ -1,5 +1,11 @@
 @Backend_HostAddress = http://localhost:5245
 
+### Health (no auth)
+GET {{Backend_HostAddress}}/health
+Accept: application/json
+
+###
+
 ### Register (201 created, 409 on duplicate control number)
 POST {{Backend_HostAddress}}/api/auth/register
 Content-Type: application/json
@@ -33,5 +39,108 @@ Accept: application/json
 ### Admin: pending registrations (needs Administrator role)
 GET {{Backend_HostAddress}}/api/admin/users/pending
 Accept: application/json
+
+###
+
+### Topics (authenticated)
+GET {{Backend_HostAddress}}/api/topics
+Accept: application/json
+
+###
+
+### Create topic (Administrator)
+POST {{Backend_HostAddress}}/api/topics
+Content-Type: application/json
+
+{
+  "name": "Tema de prueba",
+  "description": "Descripción",
+  "orderNumber": 7
+}
+
+###
+
+### Create session (Administrator; topicIds from GET /api/topics)
+POST {{Backend_HostAddress}}/api/sessions
+Content-Type: application/json
+
+{
+  "title": "Sesión 1",
+  "description": "Primera sesión",
+  "sessionDate": "2026-10-01T18:00:00Z",
+  "topicIds": []
+}
+
+###
+
+### Regenerate session QR (Administrator)
+POST {{Backend_HostAddress}}/api/admin/sessions/{sessionId}/qr/regenerate
+Accept: application/json
+
+###
+
+### Download session QR PNG (Administrator)
+GET {{Backend_HostAddress}}/api/admin/sessions/{sessionId}/qr/image
+Accept: image/png
+
+###
+
+### Register attendance by QR (authenticated student)
+POST {{Backend_HostAddress}}/api/attendance/qr/{token}
+Accept: application/json
+
+###
+
+### Session attendance list (Administrator)
+GET {{Backend_HostAddress}}/api/sessions/{sessionId}/attendance
+Accept: application/json
+
+###
+
+### Create activity (Administrator)
+POST {{Backend_HostAddress}}/api/activities
+Content-Type: application/json
+
+{
+  "title": "Actividad 1",
+  "markdownContent": "# Instrucciones",
+  "topicId": "{topicId}",
+  "sessionId": null,
+  "dueDate": "2026-12-01T00:00:00Z",
+  "submissionMode": "UrlOrFile"
+}
+
+###
+
+### Submit activity (authenticated student)
+POST {{Backend_HostAddress}}/api/activities/{activityId}/submissions
+Content-Type: application/json
+
+{
+  "url": "https://github.com/usuario/repo",
+  "storagePath": null,
+  "fileName": null,
+  "contentType": null,
+  "fileSizeBytes": null,
+  "comment": null
+}
+
+###
+
+### My progress (authenticated student)
+GET {{Backend_HostAddress}}/api/progress/me
+Accept: application/json
+
+###
+
+### Attendance report CSV (Administrator)
+GET {{Backend_HostAddress}}/api/reports/attendance?format=csv
+Accept: text/csv
+
+###
+
+### Progress report PDF (Administrator)
+GET {{Backend_HostAddress}}/api/reports/progress?format=pdf
+Accept: application/pdf
 
 ###

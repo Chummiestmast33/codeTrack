@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { api, ApiError } from '../../api/client.js'
 
 function actionClass(extra) {
-  return `rounded-md border px-2 py-1 text-xs font-medium ${extra}`
+  return `btn ${extra}`
 }
 
 export default function UsersPage() {
@@ -91,14 +91,14 @@ export default function UsersPage() {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">{t('admin.users.title')}</h1>
-        <div className="flex gap-2">
+        <h1 className="page-title">{t('admin.users.title')}</h1>
+        <div className="flex flex-wrap gap-2">
           {['pending', 'all'].map((f) => (
             <button
               key={f}
               onClick={() => { setLoading(true); setFilter(f) }}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-                filter === f ? 'bg-slate-900 text-white' : 'border border-slate-300 text-slate-700 hover:bg-slate-100'
+              className={`btn ${
+                filter === f ? 'btn-primary' : ''
               }`}
             >
               {t(`admin.users.filter.${f}`)}
@@ -108,67 +108,67 @@ export default function UsersPage() {
       </div>
 
       {error && (
-        <p role="alert" className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="mt-4 alert alert-danger">
           {errorMessage()}
         </p>
       )}
 
       {loading ? (
-        <p className="mt-6 text-slate-600">{t('common.loading')}</p>
+        <p role="status" className="state-message">{t('common.loading')}</p>
       ) : users.length === 0 ? (
-        <p className="mt-6 text-slate-600">{t('admin.users.empty')}</p>
+        <p role="status" className="state-message">{t('admin.users.empty')}</p>
       ) : (
-        <div className="mt-4 overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+        <div tabIndex={0} role="region" aria-label={t('common.tableRegion')} className="mt-6 table-panel">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-500">
+            <thead className="bg-canvas text-muted">
               <tr>
-                <th className="px-4 py-2">{t('auth.controlNumber')}</th>
-                <th className="px-4 py-2">{t('auth.fullName')}</th>
-                <th className="px-4 py-2">{t('auth.email')}</th>
-                <th className="px-4 py-2">{t('admin.users.status')}</th>
-                <th className="px-4 py-2">{t('admin.users.actions')}</th>
+                <th>{t('auth.controlNumber')}</th>
+                <th>{t('auth.fullName')}</th>
+                <th>{t('auth.email')}</th>
+                <th>{t('admin.users.status')}</th>
+                <th>{t('admin.users.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id} className="border-t border-slate-100">
-                  <td className="px-4 py-2 font-mono">{u.controlNumber}</td>
-                  <td className="px-4 py-2">{u.fullName}</td>
-                  <td className="px-4 py-2">{u.email}</td>
-                  <td className="px-4 py-2">
+                <tr key={u.id} className="border-t border-line">
+                  <td className="font-mono">{u.controlNumber}</td>
+                  <td>{u.fullName}</td>
+                  <td>{u.email}</td>
+                  <td>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      className={`badge ${
                         u.approvalStatus === 'Approved' && u.isActive
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-amber-100 text-amber-800'
+                          ? 'bg-success-soft text-success'
+                          : 'bg-warning-soft text-warning'
                       }`}
                     >
                       {t(`admin.users.approval.${u.approvalStatus}`, { defaultValue: u.approvalStatus })}
                       {u.approvalStatus === 'Approved' && !u.isActive ? ` · ${t('admin.users.inactive')}` : ''}
                     </span>
                   </td>
-                  <td className="px-4 py-2">
-                    <div className="flex flex-wrap gap-1.5">
+                  <td>
+                    <div className="flex flex-wrap gap-2">
                       {u.approvalStatus === 'Pending' && (
                         <>
-                          <button disabled={busy} onClick={() => run(`/api/admin/users/${u.id}/approve`)} className={actionClass('border-green-300 text-green-700 hover:bg-green-50')}>
+                          <button disabled={busy} onClick={() => run(`/api/admin/users/${u.id}/approve`)} className={actionClass('btn-success')}>
                             {t('admin.users.approve')}
                           </button>
-                          <button disabled={busy} onClick={() => run(`/api/admin/users/${u.id}/reject`)} className={actionClass('border-red-300 text-red-700 hover:bg-red-50')}>
+                          <button disabled={busy} onClick={() => run(`/api/admin/users/${u.id}/reject`)} className={actionClass('btn-danger')}>
                             {t('admin.users.reject')}
                           </button>
                         </>
                       )}
                       {u.isActive ? (
-                        <button disabled={busy} onClick={() => run(`/api/admin/users/${u.id}/deactivate`)} className={actionClass('border-slate-300 text-slate-700 hover:bg-slate-100')}>
+                        <button disabled={busy} onClick={() => run(`/api/admin/users/${u.id}/deactivate`)} className={actionClass('')}>
                           {t('admin.users.deactivate')}
                         </button>
                       ) : (
-                        <button disabled={busy} onClick={() => run(`/api/admin/users/${u.id}/activate`)} className={actionClass('border-slate-300 text-slate-700 hover:bg-slate-100')}>
+                        <button disabled={busy} onClick={() => run(`/api/admin/users/${u.id}/activate`)} className={actionClass('')}>
                           {t('admin.users.activate')}
                         </button>
                       )}
-                      <button disabled={busy} onClick={() => { setResetFor(u); setNewPassword('') }} className={actionClass('border-slate-300 text-slate-700 hover:bg-slate-100')}>
+                      <button disabled={busy} onClick={() => { setResetFor(u); setNewPassword('') }} className={actionClass('')}>
                         {t('admin.users.resetPassword')}
                       </button>
                     </div>
@@ -181,23 +181,23 @@ export default function UsersPage() {
       )}
 
       {resetFor && (
-        <form onSubmit={runReset} className="mt-4 max-w-sm rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+        <form onSubmit={runReset} className="mt-4 max-w-sm card">
           <h2 className="font-bold">{t('admin.users.resetTitle', { name: resetFor.fullName })}</h2>
           <label className="mt-3 block">
-            <span className="mb-1 block text-sm font-medium text-slate-700">{t('auth.password')}</span>
+            <span className="mb-2 block text-sm font-medium text-ink">{t('auth.password')}</span>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               autoComplete="new-password"
-              className="w-full rounded-md border border-slate-300 px-3 py-2"
+              className="field"
             />
           </label>
-          <div className="mt-3 flex gap-2">
-            <button type="submit" disabled={busy} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50">
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button type="submit" disabled={busy} className="btn btn-primary">
               {t('common.save')}
             </button>
-            <button type="button" onClick={() => setResetFor(null)} className="rounded-md border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">
+            <button type="button" onClick={() => setResetFor(null)} className="btn">
               {t('common.cancel')}
             </button>
           </div>

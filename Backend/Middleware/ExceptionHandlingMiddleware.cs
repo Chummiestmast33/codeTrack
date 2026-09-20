@@ -29,9 +29,9 @@ public sealed class ExceptionHandlingMiddleware
 
     private async Task WriteProblemAsync(HttpContext context, Exception ex)
     {
-        var (status, title, errors) = Map(ex);
+        var (status, title, errors, code, detail) = Map(ex);
 
-        if (status >= 500)
+        if (status >= 500 && code is null)
         {
             _logger.LogError(ex, "Unhandled error processing {Method} {Path}", context.Request.Method, context.Request.Path);
         }
@@ -40,13 +40,18 @@ public sealed class ExceptionHandlingMiddleware
         {
             Status = status,
             Title = title,
-            Detail = status >= 500 ? "An unexpected error occurred." : ex.Message,
+            Detail = detail ?? (status >= 500 ? "An unexpected error occurred." : ex.Message),
             Instance = context.Request.Path
         };
 
         if (errors is not null)
         {
             problem.Extensions["errors"] = errors;
+        }
+
+        if (code is not null)
+        {
+            problem.Extensions["code"] = code;
         }
 
         context.Response.StatusCode = status;
@@ -57,7 +62,7 @@ public sealed class ExceptionHandlingMiddleware
             context.RequestAborted);
     }
 
-    internal static (int Status, string Title, IReadOnlyDictionary<string, string[]>? Errors) Map(Exception ex) =>
+    internal static (int Status, string Title, IReadOnlyDictionary<string, string[]>? Errors, string? Code, string? Detail) Map(Exception ex) =>
         ex switch
         {
             FluentValidation.ValidationException vex => (
@@ -66,12 +71,22 @@ public sealed class ExceptionHandlingMiddleware
                 vex.Errors
                     .GroupBy(f => f.PropertyName)
                     .ToDictionary(g => g.Key, g => g.Select(f => f.ErrorMessage).ToArray())
-                as IReadOnlyDictionary<string, string[]>),
-            UnauthorizedException => (StatusCodes.Status401Unauthorized, "Unauthorized.", null),
-            ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden.", null),
-            NotFoundException => (StatusCodes.Status404NotFound, "Not found.", null),
-            ConflictException => (StatusCodes.Status409Conflict, "Conflict.", null),
-            _ => (StatusCodes.Status500InternalServerError, "Server error.", null)
+                as IReadOnlyDictionary<string, string[]>,
+                null,
+                null),
+            UnauthorizedException => (StatusCodes.Status401Unauthorized, "Unauthorized.", null, null, null),
+            ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden.", null, null, null),
+            NotFoundException => (StatusCodes.Status404NotFound, "Not found.", null, null, null),
+            ConflictException => (StatusCodes.Status409Conflict, "Conflict.", null, null, null),
+            GoneException => (StatusCodes.Status410Gone, "Gone.", null, null, null),
+            ArgumentException => (StatusCodes.Status400BadRequest, "Invalid input.", null, null, null),
+            ReportsNotConfiguredException rnce => (
+                StatusCodes.Status500InternalServerError,
+                "Reports not configured.",
+                null,
+                "reports.not-configured",
+                rnce.Message),
+            _ => (StatusCodes.Status500InternalServerError, "Server error.", null, null, null)
         };
 }
 

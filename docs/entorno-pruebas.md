@@ -27,7 +27,8 @@ será Supabase.
 
 ## 2. Secretos y variables: cómo funciona
 
-Hay **dos mundos** y no se mezclan solos:
+Hay **dos mundos** y no se mezclan solos. Referencia completa de todas
+las claves (dev + producción): [`docs/secretos.md`](secretos.md).
 
 | Mundo | Lee de | Formato de nombres | Cuándo se usa |
 |---|---|---|---|
@@ -100,6 +101,16 @@ Notas:
 - Alternativa contenerizada: `docker compose up api` (puerto `8080`;
   ciclo de cambios más lento que `dotnet run`).
 
+### 3.1. Cuenta admin inicial y salud
+
+- Si configuras la sección `Admin` (UserSecrets `Admin:*` o `ADMIN_*` en
+  `.env`), al arrancar se crea el administrador una sola vez si no existe
+  (idempotente; nunca loguea secretos). Sin config, el arranque avisa y sigue.
+- Verifica `GET /health` → `200 {"status":"Healthy",...}` con Postgres
+  arriba; `503` con la base caída. Compose lo usa como healthcheck del api.
+- Auditoría RF-24: `CreatedAt/UpdatedAt` (UTC) más `CreatedBy/UpdatedBy`
+  (actor del JWT, nulo en seed/sistema). Migración `AuditActors`.
+
 ## 4. Probar la API con Scalar
 
 Abre `http://localhost:5245/scalar/v1` (solo existe en `Development`).
@@ -144,6 +155,9 @@ npm run dev
 
 La app usa `VITE_API_URL` para el backend (default
 `http://localhost:5245`; créalo en `frontend/.env` si usas otro puerto).
+`VITE_PERIOD` muestra el periodo junto al nombre del taller (vacío = oculto);
+ver `frontend/.env.example`. Ningún dato personal vive en el repo: encabezado
+de reportes por `Reports:*` y periodo visible por `VITE_PERIOD`.
 Rutas: `/login`, `/register`, `/pending`, `/app/*` (estudiante aprobado),
 `/admin/*` (rol Administrator), `*` → 404. El token vive en
 `localStorage`; el rol para guardias sale del JWT (el backend revalida
@@ -153,6 +167,9 @@ La API solo acepta los orígenes de `Cors:AllowedOrigins`
 (`http://localhost:5173`, `:5199`, `:8080` por default; en producción se
 fijan con `Cors__AllowedOrigins__0`, ...). Si el navegador bloquea el login
 con error de CORS, verifica que el origen del frontend esté en esa lista.
+
+Entregas con archivo: ver `docs/almacenamiento.md` (bucket Supabase,
+mapeo de variables y verificación ticket → PUT → confirmación).
 ## 5. Troubleshooting (errores ya vistos en este proyecto)
 
 | Error | Causa | Fix |
@@ -174,9 +191,54 @@ con error de CORS, verifica que el origen del frontend esté en esa lista.
 
 ## 7. Producción (Supabase)
 
-Usa su conexión **directa** (puerto 5432, `SSL Mode=Require`) para
-migraciones; el pooler (6543) puede usarse en runtime. Los secretos de
-producción van en el proveedor de hosting, nunca en el repo ni en `.env`.
+Migraciones: conexión **directa** (`db.<ref>.supabase.co:5432`, usuario
+`postgres`, `SSL Mode=Require`). Runtime (contenedor persistente):
+**shared pooler en modo sesión** (`:5432`, usuario `postgres.<ref>`,
+host **copiado del diálogo Connect**, soporta prepared statements).
+No usar el modo transacción (`:6543`): es para serverless y rompe
+prepared statements. Percent-encodea el password si trae `&`, `#`, `?`
+o espacios (solo en formato URI `postgresql://`; en formato `Clave=...`
+va tal cual). Los secretos de producción van en el proveedor de hosting,
+nunca en el repo ni en `.env`.
+
+### 7.1. Conexión remota paso a paso
+
+1. En el dashboard abre **Connect** y copia las dos cadenas (reemplaza
+   `[PASSWORD]` por el password de la base; si no lo tienes, se resetea
+   en Database settings):
+   - **Directa** (migraciones):
+     `Host=db.<ref>.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=[PASSWORD];SSL Mode=Require`
+   - **Session pooler** (runtime):
+     `Host=<pooler-host>;Port=5432;Database=postgres;Username=postgres.<ref>;Password=[PASSWORD];SSL Mode=Require`
+2. Aplica migraciones (idempotente, seguro repetirlo):
+   ```powershell
+   dotnet ef database update --project Backend --connection "<directa>"
+   ```
+   Un `28P01` significa password incorrecto; un timeout, problema de red
+   (la directa es IPv6 salvo add-on; como respaldo usa el pooler sesión,
+   que es IPv4 y también acepta DDL).
+3. Arranca la API con la cadena del pooler sesión en
+   `ConnectionStrings__DefaultConnection` y verifica:
+   - `GET /health` → 200 con `appliedMigrations` esperado.
+   - Login del admin seed → 200 (configura `Admin:*` antes si es BD nueva).
+   - `GET /api/topics` → los 6 temas oficiales del seed.
+4. Estado esperado hoy: 4 migraciones aplicadas, seed de temas, sin datos
+   de prueba. El password solo vive en memoria de la sesión donde lo
+   uses; no va a archivos, docs ni reportes.
+
+### Encabezado oficial de reportes (RN-08)
+Proyecto, periodo, responsable y asesor son configuración, no código:
+
+```powershell
+dotnet user-secrets set "Reports:ProjectName" "..." --project Backend
+dotnet user-secrets set "Reports:Period" "..." --project Backend
+dotnet user-secrets set "Reports:Responsible" "..." --project Backend
+dotnet user-secrets set "Reports:Advisor" "..." --project Backend
+```
+
+En Compose equivalen a `REPORT_PROJECT_NAME`, `REPORT_PERIOD`,
+`REPORT_RESPONSIBLE` y `REPORT_ADVISOR` del `.env`. Sin estos valores,
+exportar un reporte falla con un error claro en vez de salir en blanco.
 
 ## 8. CI y freno local
 

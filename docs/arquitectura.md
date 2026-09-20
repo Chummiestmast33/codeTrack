@@ -14,7 +14,7 @@ Definir la estructura técnica del sistema que gestionará:
 - Progreso por tema.
 - Reportes oficiales de asistencia y progreso.
 
-La arquitectura busca ser simple de implementar y mantener durante el semestre AGO-DIC 2026, evitando sobreingeniería.
+La arquitectura busca ser simple de implementar y mantener durante el semestre del taller, evitando sobreingeniería.
 
 ---
 
@@ -691,13 +691,15 @@ En producción, la base de datos y el storage pueden ser servicios administrados
 
 ## 19. Reportes
 
-El módulo de reportes debe generar documentos con el encabezado oficial:
+El módulo de reportes debe generar documentos con el encabezado oficial
+(valores configurables por despliegue en la sección `Reports`, nunca fijos
+en el repositorio):
 
 ```text
-Proyecto: Introducción a la Programación Competitiva
-Periodo: AGO-DIC 2026
-Responsable: Ing. Armando López Cisenna
-Estudiante asesor: Pablo Cortez Rodríguez
+Proyecto: <nombre del proyecto>
+Periodo: <periodo>
+Responsable: <responsable del proyecto>
+Estudiante asesor: <estudiante asesor>
 ```
 
 ### Reporte de asistencia

@@ -2,6 +2,52 @@
   "_note": "English skeleton. Missing keys fall back to Spanish (fallbackLng). Translate on top of the es.json structure.",
   "app": {
     "title": "CodeTrack",
-    "languageLabel": "Language"
+    "languageLabel": "Language",
+    "subtitle": "Introduction to Competitive Programming"
+  },
+  "nav": {
+    "main": "Main navigation",
+    "openMenu": "Menu",
+    "closeMenu": "Close menu",
+    "skipContent": "Skip to content"
+  },
+  "common": {
+    "tableRegion": "Data table; scroll horizontally to see all columns"
+  },
+  "activities": {
+    "submissionMode": "Submission type"
+  },
+  "submissions": {
+    "file": "File",
+    "url": "Submission link",
+    "statusLabel": "Submission status"
+  },
+  "visual": {
+    "workshop": "Competitive programming",
+    "headline": "Great ideas. ",
+    "headlineAccent": "Better code.",
+    "introduction": "A space to learn, solve challenges and discover how far you can go.",
+    "learn": "Learn",
+    "solve": "Solve",
+    "advance": "Grow",
+    "loginEyebrow": "Your next challenge awaits",
+    "registerEyebrow": "Start your journey",
+    "loginDescription": "Sign in to your space and keep learning.",
+    "registerDescription": "Create an account to join the workshop. An administrator will review your request.",
+    "pauseMotion": "Pause background animations",
+    "adminSpace": "Administration space",
+    "studentSpace": "Your learning space",
+    "dashboardTitle": "One challenge at a time.",
+    "dashboardAccent": "One step further.",
+    "dashboardDescription": "Everything you need to keep learning, in one place.",
+    "explore": "Continue your journey",
+    "sessionsDescription": "Explore upcoming sessions and record your attendance.",
+    "activitiesDescription": "Find your next activity and share your solution.",
+    "progressDescription": "See how far you have progressed in each topic.",
+    "open": "Explore",
+    "profileEyebrow": "Your workshop identity",
+    "profileDescription": "These are the details associated with your account.",
+    "sessionHint": "Your next opportunity to learn.",
+    "pendingEyebrow": "You are all set"
   }
 }

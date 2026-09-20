@@ -1,4 +1,5 @@
 using Backend.Application.Features.Identity;
+using Backend.Application.Features.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,4 +51,8 @@ public sealed class UsersAdminController : ControllerBase
     [HttpPost("{id:guid}/reset-password")]
     public async Task<ActionResult<UserDto>> ResetPassword(Guid id, ResetPasswordRequest request, CancellationToken cancellationToken) =>
         Ok(await _sender.Send(new ResetPasswordCommand(id, request.NewPassword), cancellationToken));
+
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult<UserDto>> Rename(Guid id, RenameUserRequest request, CancellationToken cancellationToken) =>
+        Ok(await _sender.Send(new RenameUserCommand(id, request.FullName), cancellationToken));
 }
